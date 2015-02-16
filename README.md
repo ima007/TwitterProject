@@ -28,3 +28,16 @@ Time spent: TBD
 
 ### Walkthrough
 TBD
+
+### Installation
+* Requires Xcode 6.3 beta
+* Create a Twitter app to get a Consumer Key and Consumer Secret from http://apps.twitter.com
+* In the root folder, create ApiConfig.xcconfig
+* Inside ApiConfig.xcconfig, add:
+
+````
+    TWEET_CONSUMER_KEY = your-consumer-key
+    TWEET_CONSUMER_SECRET = your-consumer-secret
+````
+
+* Open the TwitterProject.xcworkspace file, and build!
