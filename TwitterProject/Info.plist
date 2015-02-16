@@ -30,6 +30,10 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>TWEET_CONSUMER_SECRET</key>
+	<string>$(TWEET_CONSUMER_SECRET)</string>
+	<key>TWEET_CONSUMER_KEY</key>
+	<string>$(TWEET_CONSUMER_KEY)</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
