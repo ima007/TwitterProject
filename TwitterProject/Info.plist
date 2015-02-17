@@ -18,10 +18,27 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.codepath.TwitterProject</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>twitterproject</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>TWEET_CONSUMER_KEY</key>
+	<string>$(TWEET_CONSUMER_KEY)</string>
+	<key>TWEET_CONSUMER_SECRET</key>
+	<string>$(TWEET_CONSUMER_SECRET)</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -30,10 +47,6 @@
 	<array>
 		<string>armv7</string>
 	</array>
-	<key>TWEET_CONSUMER_SECRET</key>
-	<string>$(TWEET_CONSUMER_SECRET)</string>
-	<key>TWEET_CONSUMER_KEY</key>
-	<string>$(TWEET_CONSUMER_KEY)</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

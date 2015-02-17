@@ -13,8 +13,8 @@ class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    var test = NSBundle.mainBundle().objectForInfoDictionaryKey("TWEET_CONSUMER_KEY") as! String
-    println("Consumer key = \(test)")
+    TwitterClient.sharedInstance.getRequestToken()
+    
     // Do any additional setup after loading the view, typically from a nib.
   }
 
