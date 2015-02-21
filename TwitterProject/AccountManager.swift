@@ -57,8 +57,8 @@ class AccountManager{
   
   func logoutCurrentAccount(){
     AccountManager.loggedInAccount?.logout()
-    NSNotificationCenter.defaultCenter().postNotificationName(accountDidLogoutNotification, object: nil)
     AccountManager.loggedInAccount = nil
+    NSNotificationCenter.defaultCenter().postNotificationName(accountDidLogoutNotification, object: nil)
   }
 
 }

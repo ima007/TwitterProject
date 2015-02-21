@@ -32,6 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
   
   func userDidLogin(){
+    println("user did login")
     let storyboard = UIStoryboard(name: "Timeline", bundle: nil)
     let controller = storyboard.instantiateInitialViewController() as! UINavigationController
     
@@ -45,6 +46,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     window?.rootViewController = controller
     window?.makeKeyAndVisible()
+    
+    //let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    //let controller = storyboard.instantiateInitialViewController() as! UINavigationController
+    /*
+    let newStoryboard = UIStoryboard(name: "Main", bundle: nil)
+    var controller = newStoryboard.instantiateViewControllerWithIdentifier("LoginController") as! LoginController
+    
+    let newNavigationController = UINavigationController(rootViewController: controller)
+    
+    window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
+    
+    //self.presentViewController(newNavigationController, animated: true, completion: nil)
+    */
+    
+
   }
 
   func applicationWillResignActive(application: UIApplication) {

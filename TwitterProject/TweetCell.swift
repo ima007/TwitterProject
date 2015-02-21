@@ -34,7 +34,16 @@ class TweetCell: UITableViewCell {
   }
   
   private func autoLayoutBug(){
-    contentLabel.preferredMaxLayoutWidth = contentLabel.frame.size.width
+    // the preferredMaxLayoutWidth way of working around the issue was causing the intial
+    // rendering of the tweet content to have some "padding" around it for some of the cells.
+    // only doing "layoutIfNeeded" seems to resolve the issue.
+    self.layoutIfNeeded()
+    /*
+    if contentLabel.preferredMaxLayoutWidth != contentLabel.frame.size.width {
+      //contentLabel.preferredMaxLayoutWidth = contentLabel.frame.size.width
+      //contentLabel.setNeedsUpdateConstraints()
+    }
+    */
   }
   
   func setContents(tweet: Tweet){
@@ -45,7 +54,7 @@ class TweetCell: UITableViewCell {
     }
     nameLabel.text = tweet.account?.name
     contentLabel.text = tweet.text
-    handleLabel.text = tweet.account?.handle
+    handleLabel.text = tweet.account?.screenNameWithAt
     if let date = tweet.createdAt{
       dateFormatter.doesRelativeDateFormatting = true
       dateFormatter.dateStyle = .ShortStyle

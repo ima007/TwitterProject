@@ -43,5 +43,7 @@ class Tweet:Deserializable{
     createdAtUnformatted <<< data["created_at"]
   }
   
+  deinit { println("Tweet is being deinitialized") }
+  
 }
 

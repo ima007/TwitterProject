@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		2D48011A1A9586DD00714A0C /* Timeline.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2D4801191A9586DD00714A0C /* Timeline.storyboard */; };
+		2D64AB201A99133900A7D2FC /* Compose.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2D64AB1F1A99133900A7D2FC /* Compose.storyboard */; };
+		2D64AB221A99137500A7D2FC /* ComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D64AB211A99137500A7D2FC /* ComposeController.swift */; };
 		2D98E6091A98671D009CA46B /* JSONHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D98E6081A98671D009CA46B /* JSONHelper.swift */; };
 		2D98E60B1A98714A009CA46B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D98E60A1A98714A009CA46B /* Extensions.swift */; };
 		2D98E60D1A989200009CA46B /* TimelineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D98E60C1A989200009CA46B /* TimelineViewController.swift */; };
@@ -39,6 +41,8 @@
 /* Begin PBXFileReference section */
 		1388145FD5FE4027401021B2 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D4801191A9586DD00714A0C /* Timeline.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Timeline.storyboard; sourceTree = "<group>"; };
+		2D64AB1F1A99133900A7D2FC /* Compose.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Compose.storyboard; sourceTree = "<group>"; };
+		2D64AB211A99137500A7D2FC /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeController.swift; sourceTree = "<group>"; };
 		2D98E6081A98671D009CA46B /* JSONHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONHelper.swift; sourceTree = "<group>"; };
 		2D98E60A1A98714A009CA46B /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		2D98E60C1A989200009CA46B /* TimelineViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineViewController.swift; sourceTree = "<group>"; };
@@ -186,6 +190,7 @@
 			children = (
 				2D98E60C1A989200009CA46B /* TimelineViewController.swift */,
 				2DEF0E091A92B1960083D725 /* LoginController.swift */,
+				2D64AB211A99137500A7D2FC /* ComposeController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -195,6 +200,7 @@
 			children = (
 				2DEF0E0B1A92B1960083D725 /* Main.storyboard */,
 				2D4801191A9586DD00714A0C /* Timeline.storyboard */,
+				2D64AB1F1A99133900A7D2FC /* Compose.storyboard */,
 			);
 			name = Storyboards;
 			sourceTree = "<group>";
@@ -299,6 +305,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2DEF0E0D1A92B1960083D725 /* Main.storyboard in Resources */,
+				2D64AB201A99133900A7D2FC /* Compose.storyboard in Resources */,
 				2DEF0E2D1A92B5F80083D725 /* ApiConfig.xcconfig in Resources */,
 				2D48011A1A9586DD00714A0C /* Timeline.storyboard in Resources */,
 				2DEF0E121A92B1960083D725 /* LaunchScreen.xib in Resources */,
@@ -354,6 +361,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2DEF0E341A95728D0083D725 /* Account.swift in Sources */,
+				2D64AB221A99137500A7D2FC /* ComposeController.swift in Sources */,
 				2D98E60B1A98714A009CA46B /* Extensions.swift in Sources */,
 				2DEF0E0A1A92B1960083D725 /* LoginController.swift in Sources */,
 				2DEF0E2F1A92B9C60083D725 /* TwitterClient.swift in Sources */,

@@ -24,12 +24,14 @@ class LoginController: UIViewController {
   @IBAction func loginPressed(sender: AnyObject) {
     
     if let account = AccountManager.loggedInAccount {
-      let storyboard = UIStoryboard(name: "Timeline", bundle: nil)
-      let controller = storyboard.instantiateInitialViewController() as! TimelineViewController
+      let newStoryboard = UIStoryboard(name: "Timeline", bundle: nil)
+      var timelineController = newStoryboard.instantiateViewControllerWithIdentifier("TimelineViewController") as! TimelineViewController
+
+      timelineController.account = AccountManager.loggedInAccount
       
-      controller.account = account
+      let newNavigationController = UINavigationController(rootViewController: timelineController)
       
-      navigationController?.pushViewController(controller, animated: true)
+      self.presentViewController(newNavigationController, animated: true, completion: nil)
     }else{
       AccountManager.sharedInstance.loginNewAccount()
     }

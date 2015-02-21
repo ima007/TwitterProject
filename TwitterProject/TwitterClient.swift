@@ -61,9 +61,10 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
         self.requestSerializer.saveAccessToken(accessToken)
         
         self.getAccount({(account) -> Void in
-          AccountManager.loggedInAccount = account
-          NSNotificationCenter.defaultCenter().postNotificationName(accountDidLoginNotification, object: nil)
-
+          if let account = account{
+            AccountManager.loggedInAccount = account
+            NSNotificationCenter.defaultCenter().postNotificationName(accountDidLoginNotification, object: nil)
+          }
         },
           failure:{() -> Void in
         })
@@ -99,12 +100,13 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
       success:{
         (operation, response) -> Void in
         var tweets:[Tweet]?
-        println("\(response)")
+        //println("\(response)")
         tweets <<<<* response
         success(tweets)
       },
       failure: {
         (operation, error) -> Void in
+        println("\(error)")
         failure()
     })
   }
@@ -123,25 +125,4 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
   you want on your main controller
   */
   
-  func getTimeline(count: Int, success: ((tweets: [Tweet])->Void), failure: ((operation: AFHTTPRequestOperation, err: NSError)->Void)) {
-    
-    self.GET("statuses/home_timeline.json?count=20", parameters: nil,
-      success: {
-        (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
-        
-        var tweets: [Tweet] = [Tweet]()
-        let tweetsDictionaryArray: Array<Dictionary<String,AnyObject>> = response as! Array<Dictionary<String,AnyObject>>;
-        for tweet in tweetsDictionaryArray {
-          //tweets.append(Tweet.fromJsonTweet(tweet));
-        }
-        
-        success(tweets: tweets)
-        
-      }, failure: {
-        (operation: AFHTTPRequestOperation!, err: NSError!) -> Void in
-        
-        failure(operation: operation, err: err);
-      }
-    )
-  }
 }

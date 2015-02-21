@@ -14,7 +14,7 @@ class Account:Deserializable {
   var friends_count:Int?
   var name:String?
   var screen_name:String?
-  var handle:String? {
+  var screenNameWithAt:String? {
     if let screen_name = screen_name{
       return "@"+screen_name
     }
@@ -24,6 +24,14 @@ class Account:Deserializable {
   var description:String?
   var profileBackgroundColor:UIColor?
   var profileImageUrl:String?
+  lazy var profileImageNsUrl:NSURL? = {
+    [unowned self] in
+    if let profileImageUrl = self.profileImageUrl{
+      return NSURL(string: profileImageUrl)
+    }else{
+      return nil
+    }
+  }()
 
   var timeline:[Tweet]?
   
@@ -62,6 +70,7 @@ class Account:Deserializable {
         success(tweets)
       }, failure: failure)
   }
+  
   private func getTimelineTypeParams(type:TimelineType?) -> [String:String]?{
     var tweet_id:String?
     var load_type:String?
@@ -113,12 +122,9 @@ class Account:Deserializable {
   
   func login(){
     api.getRequestToken()
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDidLogin", name: accountDidLoginNotification, object: nil)
   }
   
-  func userDidLogin(){
-    
-  }
+   deinit { println("\(name) is being deinitialized") }
 }
 
 /*

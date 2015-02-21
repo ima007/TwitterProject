@@ -6,6 +6,14 @@
 //  Copyright (c) 2015 codepath. All rights reserved.
 //
 
+extension UIImageView{
+  func twi_setImageWithUrl(url:NSURL?){
+    if let url = url{
+      self.setImageWithURL(url)
+    }
+  }
+}
+
 extension UIColor {
   
   convenience init(twitterHex: String) {
