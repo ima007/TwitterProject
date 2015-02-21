@@ -108,6 +108,16 @@ class TimelineViewController: UIViewController {
     self.presentViewController(navigationController, animated: true, completion: nil)
 
   }
+  
+  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    if segue.identifier == "seeDetailSegue"{
+      if let destinationVC = segue.destinationViewController as? TweetViewController{
+        if let tweetIndex = tableView.indexPathForSelectedRow()?.row {
+          destinationVC.tweet = account?.timeline?[tweetIndex]
+        }
+      }
+    }
+  }
 
 }
 

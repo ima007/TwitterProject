@@ -116,11 +116,31 @@ class Account:Deserializable {
       }, failure: failure)
   }
   
+  /*
+  * Replies require at least one username in the body
+  */
+  func sendTweet(content:String?, replyId:String?, success:(Tweet? -> Void), failure:()->Void){
+    var params = [String:String]()
+    if let content = content{
+      params.updateValue(content, forKey: "status")
+    }
+    if let replyId = replyId{
+      params.updateValue(replyId, forKey: "in_reply_to_status_id")
+    }
+    api.sendTweet(params: params, success: success, failure: failure)
+  }
+  
+  func retweet(id:String?, success:(Tweet? -> Void), failure:()->Void){
+    api.retweet(id, success: success, failure: failure)
+  }
+  
   func logout(){
     api.requestSerializer.removeAccessToken()
   }
   
   func login(){
+    //Start the login process. Will emit notification when done.
+    //AppDelegate will open the right view.
     api.getRequestToken()
   }
   

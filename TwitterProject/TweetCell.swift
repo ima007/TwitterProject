@@ -47,11 +47,11 @@ class TweetCell: UITableViewCell {
   }
   
   func setContents(tweet: Tweet){
-    if let url = tweet.account?.profileImageUrl{
-      tweetImage.setImageWithURL(NSURL(string:url))
-      tweetImage.layer.cornerRadius = 3.0
-      tweetImage.clipsToBounds = true
-    }
+
+    tweetImage.setImageWithURL(tweet.account?.profileImageNsUrl)
+    tweetImage.layer.cornerRadius = 3.0
+    tweetImage.clipsToBounds = true
+    
     nameLabel.text = tweet.account?.name
     contentLabel.text = tweet.text
     handleLabel.text = tweet.account?.screenNameWithAt

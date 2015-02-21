@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2D1238201A993C49003C9BC1 /* TweetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D12381F1A993C49003C9BC1 /* TweetViewController.swift */; };
+		2D1238221A9940BF003C9BC1 /* TweetDetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1238211A9940BF003C9BC1 /* TweetDetailCell.swift */; };
+		2D1238241A9940D6003C9BC1 /* TweetStatsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1238231A9940D6003C9BC1 /* TweetStatsCell.swift */; };
+		2D1238261A9940E5003C9BC1 /* TweetActionsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1238251A9940E5003C9BC1 /* TweetActionsCell.swift */; };
 		2D48011A1A9586DD00714A0C /* Timeline.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2D4801191A9586DD00714A0C /* Timeline.storyboard */; };
 		2D64AB201A99133900A7D2FC /* Compose.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2D64AB1F1A99133900A7D2FC /* Compose.storyboard */; };
 		2D64AB221A99137500A7D2FC /* ComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D64AB211A99137500A7D2FC /* ComposeController.swift */; };
@@ -40,6 +44,10 @@
 
 /* Begin PBXFileReference section */
 		1388145FD5FE4027401021B2 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D12381F1A993C49003C9BC1 /* TweetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetViewController.swift; sourceTree = "<group>"; };
+		2D1238211A9940BF003C9BC1 /* TweetDetailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetDetailCell.swift; sourceTree = "<group>"; };
+		2D1238231A9940D6003C9BC1 /* TweetStatsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetStatsCell.swift; sourceTree = "<group>"; };
+		2D1238251A9940E5003C9BC1 /* TweetActionsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetActionsCell.swift; sourceTree = "<group>"; };
 		2D4801191A9586DD00714A0C /* Timeline.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Timeline.storyboard; sourceTree = "<group>"; };
 		2D64AB1F1A99133900A7D2FC /* Compose.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Compose.storyboard; sourceTree = "<group>"; };
 		2D64AB211A99137500A7D2FC /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeController.swift; sourceTree = "<group>"; };
@@ -191,6 +199,7 @@
 				2D98E60C1A989200009CA46B /* TimelineViewController.swift */,
 				2DEF0E091A92B1960083D725 /* LoginController.swift */,
 				2D64AB211A99137500A7D2FC /* ComposeController.swift */,
+				2D12381F1A993C49003C9BC1 /* TweetViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -209,6 +218,9 @@
 			isa = PBXGroup;
 			children = (
 				2D98E60E1A989D70009CA46B /* TweetCell.swift */,
+				2D1238211A9940BF003C9BC1 /* TweetDetailCell.swift */,
+				2D1238231A9940D6003C9BC1 /* TweetStatsCell.swift */,
+				2D1238251A9940E5003C9BC1 /* TweetActionsCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -368,7 +380,11 @@
 				2DEF0E081A92B1960083D725 /* AppDelegate.swift in Sources */,
 				2D98E60D1A989200009CA46B /* TimelineViewController.swift in Sources */,
 				2D98E6091A98671D009CA46B /* JSONHelper.swift in Sources */,
+				2D1238201A993C49003C9BC1 /* TweetViewController.swift in Sources */,
 				2D98E60F1A989D70009CA46B /* TweetCell.swift in Sources */,
+				2D1238261A9940E5003C9BC1 /* TweetActionsCell.swift in Sources */,
+				2D1238221A9940BF003C9BC1 /* TweetDetailCell.swift in Sources */,
+				2D1238241A9940D6003C9BC1 /* TweetStatsCell.swift in Sources */,
 				2DEF0E311A9572080083D725 /* Tweet.swift in Sources */,
 				2DEF0E361A9572980083D725 /* AccountManager.swift in Sources */,
 			);

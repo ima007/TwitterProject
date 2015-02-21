@@ -106,23 +106,79 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
       },
       failure: {
         (operation, error) -> Void in
-        println("\(error)")
+        println("home timleine error |||| \(error)")
         failure()
     })
   }
   
-  /*
+  //status
+  //in_reply_to_status_id
+  func sendTweet(#params:[String:AnyObject]?, success: (Tweet? -> Void), failure:() -> Void){
+    POST("1.1/statuses/update",
+      parameters: params ?? nil,
+      success:{
+        (operation, response) -> Void in
+        var tweet:Tweet?
+        //println("\(response)")
+        tweet <<<< response
+        success(tweet)
+      },
+      failure: {
+        (operation, error) -> Void in
+        println("sendTweet error |||| \(error)")
+        failure()
+    })
+  }
   
-  Social.frameowkr
-  Accounts.framework instead of normal oauth
+  func retweet(tweetId:String?, success: (Tweet? -> Void), failure:() -> Void){
+    POST("1.1/statuses/retweet/" + tweetId!,
+      parameters: nil,
+      success:{
+        (operation, response) -> Void in
+        var tweet:Tweet?
+        //println("\(response)")
+        tweet <<<< response
+        success(tweet)
+      },
+      failure: {
+        (operation, error) -> Void in
+        println("retweet error |||| \(error)")
+        failure()
+    })
+  }
   
-  storyboard = UIStoryBoard(instance
-  storyboard.instantiateInitialViewController() as modalviewthing
-  self.parentViewController
+  func favorite(tweetId:String?, success: (Tweet? -> Void), failure:() -> Void){
+    POST("1.1/favorites/create",
+      parameters: [["id":tweetId!]],
+      success:{
+        (operation, response) -> Void in
+        var tweet:Tweet?
+        //println("\(response)")
+        tweet <<<< response
+        success(tweet)
+      },
+      failure: {
+        (operation, error) -> Void in
+        println("retweet error |||| \(error)")
+        failure()
+    })
+  }
   
-  How to dismiss?
-  implement delegate/protocol on modalviewcontroller, and implement whatever dimiss
-  you want on your main controller
-  */
+  func unfavorite(tweetId:String?, success: (Tweet? -> Void), failure:() -> Void){
+    POST("1.1/favorites/destroy",
+      parameters: [["id":tweetId!]],
+      success:{
+        (operation, response) -> Void in
+        var tweet:Tweet?
+        //println("\(response)")
+        tweet <<<< response
+        success(tweet)
+      },
+      failure: {
+        (operation, error) -> Void in
+        println("retweet error |||| \(error)")
+        failure()
+    })
+  }
   
 }
