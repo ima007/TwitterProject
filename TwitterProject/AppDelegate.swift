@@ -15,8 +15,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-    // Override point for customization after application launch.
+    
+    window = UIWindow(frame: UIScreen.mainScreen().bounds);
+    
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDidLogout", name: accountDidLogoutNotification, object: nil)
+    
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDidLogin", name: accountDidLoginNotification, object: nil)
+    
+    if AccountManager.loggedInAccount != nil{
+      userDidLogin()
+    }else{
+      userDidLogout()
+    }
+    
     return true
+  }
+  
+  func userDidLogin(){
+    let storyboard = UIStoryboard(name: "Timeline", bundle: nil)
+    let controller = storyboard.instantiateInitialViewController() as! UINavigationController
+    
+    window?.rootViewController = controller
+    window?.makeKeyAndVisible()
+  }
+  
+  func userDidLogout(){
+    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    let controller = storyboard.instantiateInitialViewController() as! UINavigationController
+    
+    window?.rootViewController = controller
+    window?.makeKeyAndVisible()
   }
 
   func applicationWillResignActive(application: UIApplication) {
@@ -43,7 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
     
-    TwitterClient.sharedInstance.getAccessToken(url.query!)
+    Account().api.getAccessToken(url.query!)
     
     return true
   }

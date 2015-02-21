@@ -8,31 +8,27 @@
 
 import Foundation
 
+enum TimelineType{
+  case OlderTweets
+  case NewerTweets
+}
+
 class TwitterClient: BDBOAuth1RequestOperationManager {
-  
-  //Singleton
-  class var sharedInstance: TwitterClient {
-    struct Static {
-      static let instance:TwitterClient = TwitterClient()
-    }
-    return Static.instance
-  }
   
   private let Bundle = NSBundle.mainBundle()
   private let BaseUrl = "https://api.twitter.com"
   
-  var requestToken:BDBOAuth1Credential?
+  private var account:Account?
   
-  init(){
+  init(account: Account){
+    self.account = account
     
-    var test = NSBundle.mainBundle().objectForInfoDictionaryKey("TWEET_CONSUMER_KEY") as! String
-    var test2 = NSBundle.mainBundle().objectForInfoDictionaryKey("TWEET_CONSUMER_SECRET") as! String
-    println("Consumer key = \(test)")
-    println("Consumer secret = \(test2)")
+    let consumerKey = NSBundle.mainBundle().objectForInfoDictionaryKey("TWEET_CONSUMER_KEY") as! String
+    let consumerSecret = NSBundle.mainBundle().objectForInfoDictionaryKey("TWEET_CONSUMER_SECRET") as! String
     
     super.init(baseURL: NSURL(string:BaseUrl),
-      consumerKey: test,
-      consumerSecret: test2)
+      consumerKey: consumerKey,
+      consumerSecret: consumerSecret)
   }
 
   required init(coder aDecoder: NSCoder) {
@@ -46,8 +42,7 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
       callbackURL: NSURL(string:"twitterproject://oauth"),
       scope: nil,
       success: {(requestToken) -> Void in
-        println("success!")
-        self.requestToken = requestToken
+        println("got the request token!")
         let authUrl = "https://api.twitter.com/oauth/authorize?oauth_token=\(requestToken.token)"
         UIApplication.sharedApplication().openURL(NSURL(string:authUrl)!);
       },
@@ -60,15 +55,93 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
     fetchAccessTokenWithPath("oauth/access_token",
       method: "POST",
       requestToken: BDBOAuth1Credential(queryString: queryString),
-      success: {(requestToken) -> Void in
+      success: {(accessToken) -> Void in
         println("got access token success!")
-        //let authUrl = "https://api.twitter.com/oauth/authorize?oauth_token=\(requestToken.token)"
-        //UIApplication.sharedApplication().openURL(NSURL(string:authUrl)!);
+        
+        self.requestSerializer.saveAccessToken(accessToken)
+        
+        self.getAccount({(account) -> Void in
+          AccountManager.loggedInAccount = account
+          NSNotificationCenter.defaultCenter().postNotificationName(accountDidLoginNotification, object: nil)
+
+        },
+          failure:{() -> Void in
+        })
       },
-      failure: {(requestTokenError) -> Void in
-        println("failed! \(requestTokenError)")
+      failure: {(tokenError) -> Void in
+        println("failed! \(tokenError)")
     })
   }
+  
 
-   
+  
+  func getAccount(success:(Account? -> Void), failure:()->Void){
+    GET("1.1/account/verify_credentials.json",
+      parameters: nil,
+      success:{
+        (operation, response) -> Void in
+        var account:Account?
+        account <<<< response
+        success(account)
+      },
+      failure: {
+        (operation, error) -> Void in
+    })
+  }
+  
+  func getHomeTimeline(success:([Tweet]? -> Void), failure:()->Void){
+    getHomeTimeline(params: nil, success: success, failure: failure)
+  }
+  
+  func getHomeTimeline(#params:[String:AnyObject]?,success:([Tweet]? -> Void), failure:()->Void){
+    GET("1.1/statuses/home_timeline.json",
+      parameters: params ?? nil,
+      success:{
+        (operation, response) -> Void in
+        var tweets:[Tweet]?
+        println("\(response)")
+        tweets <<<<* response
+        success(tweets)
+      },
+      failure: {
+        (operation, error) -> Void in
+        failure()
+    })
+  }
+  
+  /*
+  
+  Social.frameowkr
+  Accounts.framework instead of normal oauth
+  
+  storyboard = UIStoryBoard(instance
+  storyboard.instantiateInitialViewController() as modalviewthing
+  self.parentViewController
+  
+  How to dismiss?
+  implement delegate/protocol on modalviewcontroller, and implement whatever dimiss
+  you want on your main controller
+  */
+  
+  func getTimeline(count: Int, success: ((tweets: [Tweet])->Void), failure: ((operation: AFHTTPRequestOperation, err: NSError)->Void)) {
+    
+    self.GET("statuses/home_timeline.json?count=20", parameters: nil,
+      success: {
+        (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
+        
+        var tweets: [Tweet] = [Tweet]()
+        let tweetsDictionaryArray: Array<Dictionary<String,AnyObject>> = response as! Array<Dictionary<String,AnyObject>>;
+        for tweet in tweetsDictionaryArray {
+          //tweets.append(Tweet.fromJsonTweet(tweet));
+        }
+        
+        success(tweets: tweets)
+        
+      }, failure: {
+        (operation: AFHTTPRequestOperation!, err: NSError!) -> Void in
+        
+        failure(operation: operation, err: err);
+      }
+    )
+  }
 }
