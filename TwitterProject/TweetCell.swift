@@ -11,21 +11,21 @@ import UIKit
 let dateFormatter = NSDateFormatter()
 
 class TweetCell: UITableViewCell, TweetCellDelegate {
-  @IBOutlet weak var tweetImage: UIImageView!
+  @IBOutlet weak private var tweetImage: UIImageView!
 
-  @IBOutlet weak var nameLabel: UILabel!
+  @IBOutlet weak private var nameLabel: UILabel!
   
-  @IBOutlet weak var handleLabel: UILabel!
+  @IBOutlet weak private var handleLabel: UILabel!
   
-  @IBOutlet weak var contentLabel: UILabel!
+  @IBOutlet weak private var contentLabel: UILabel!
   
-  @IBOutlet weak var dateLabel: UILabel!
+  @IBOutlet weak private var dateLabel: UILabel!
   
-  @IBOutlet weak var replyButton: UIButton!
+  @IBOutlet weak private var replyButton: UIButton!
   
-  @IBOutlet weak var retweetButton: UIButton!
+  @IBOutlet weak private var retweetButton: UIButton!
   
-  @IBOutlet weak var favoriteButton: UIButton!
+  @IBOutlet weak private var favoriteButton: UIButton!
   
   var delegate:TweetActionsDelegate?
   

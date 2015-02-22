@@ -100,7 +100,7 @@ class TweetActionsCell: UITableViewCell, TweetCellDelegate {
           println("favorited")
           self.favoriteActionIsHappening = false
           self.tweet?.incrementFavorites()
-          self.setContent(tweet)
+          self.setContent(self.tweet)
           self.delegate?.favorite(tweet)
           },
           failure: { () -> Void in
@@ -112,7 +112,7 @@ class TweetActionsCell: UITableViewCell, TweetCellDelegate {
            println("unfavorited")
             self.favoriteActionIsHappening = false
             self.tweet?.decrementFavorites()
-            self.setContent(tweet)
+            self.setContent(self.tweet)
             self.delegate?.unfavorite(tweet)
           },
           failure: { () -> Void in
