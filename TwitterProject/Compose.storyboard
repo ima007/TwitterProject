@@ -60,11 +60,25 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="UZY-wg-WuY">
+                        <nil key="title"/>
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="aK6-FB-vUn">
                             <connections>
                                 <action selector="tappedCancelButton:" destination="nia-qc-vHm" id="Tb5-aI-X3r"/>
                             </connections>
                         </barButtonItem>
+                        <view key="titleView" contentMode="scaleToFill" id="fA8-Mf-csx">
+                            <rect key="frame" x="68" y="6" width="193" height="33"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="140" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UxM-rH-z0z">
+                                    <rect key="frame" x="168" y="6" width="29" height="21"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <color key="textColor" red="0.72097932450000002" green="0.72097932450000002" blue="0.72097932450000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </view>
                         <barButtonItem key="rightBarButtonItem" title="Tweet" id="vze-Ld-T5u">
                             <connections>
                                 <action selector="tappedSendButton:" destination="nia-qc-vHm" id="6IG-wT-kRY"/>
@@ -72,6 +86,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="characterCountLabel" destination="UxM-rH-z0z" id="JIZ-LV-8g7"/>
                         <outlet property="profileImage" destination="r9c-H4-WJe" id="euA-kC-6Tv"/>
                         <outlet property="profileName" destination="7qg-W6-zSO" id="tTj-By-Dr5"/>
                         <outlet property="profileScreenName" destination="BEg-wL-cQP" id="EVM-SZ-s0H"/>

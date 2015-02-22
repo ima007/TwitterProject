@@ -21,11 +21,14 @@ class ComposeController: UIViewController {
   @IBOutlet weak var profileImage: UIImageView!
   @IBOutlet weak var profileName: UILabel!
   
+  @IBOutlet weak var characterCountLabel: UILabel!
   @IBOutlet weak var profileScreenName: UILabel!
   
   var delegate: ComposeModalDelegate?
   var account: Account?
   var tweet: Tweet?
+  
+  let MaxCharLength = 140
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -34,12 +37,29 @@ class ComposeController: UIViewController {
     profileName.text = account?.name
     profileScreenName.text = account?.screenNameWithAt
     
+    tweetInput.delegate = self
+    
     setMentions()
+    
+    setTitleCount()
   }
   
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
+  }
+  
+  func setTitleCount(){
+    if let text = tweetInput.text {
+      characterCountLabel.text = String(text.utf16Count)
+      if text.utf16Count > MaxCharLength {
+        characterCountLabel.textColor = UIColor.redColor()
+      }else{
+        characterCountLabel.textColor = UIColor.grayColor()
+      }
+    }else{
+      characterCountLabel.text = "0"
+    }
   }
   
   func setMentions(){
@@ -72,41 +92,66 @@ class ComposeController: UIViewController {
 
   @IBAction func tappedSendButton(sender: AnyObject) {
     if let text = tweetInput.text {
-      var customId = NSUUID().UUIDString as String
-      var newTweet = Tweet()
-      newTweet.text = text
-      newTweet.account = account
-      newTweet.createdAt = NSDate()
-      newTweet.favorite_count = 0
-      newTweet.retweet_count = 0
-      newTweet.id_str = customId
-      newTweet.isUpdating = true
-      delegate?.sent(self, newTweet: newTweet)
-      account?.sendTweet(
-        text,
-        replyId: tweet?.id_str,
-        success: { (finalTweet) -> Void in
-          if let finalTweet = finalTweet{
-            newTweet.update(finalTweet)
-          }else{
-            //self.delegate?.failedFinal(customId)
-          }
-        },
-        failure: { () -> Void in
-          //self.delegate?.failedFinal(customId)
-      })
+      if tweetInput.text.utf16Count <= MaxCharLength  {
+        submit(text)
+      }else{
+        showLengthError()
+      }
     }
   }
   
+  private func showLengthError(){
+    var alert = UIAlertView(title: "Dang.", message: "Shorten that message, then we'll let it through.", delegate: self, cancelButtonTitle: "Ok, I will")
+    alert.show()
+  }
+  
+  private func submit(text:String){
+    var customId = NSUUID().UUIDString as String
+    var newTweet = Tweet()
+    newTweet.text = text
+    newTweet.account = account
+    newTweet.createdAt = NSDate()
+    newTweet.favorite_count = 0
+    newTweet.retweet_count = 0
+    newTweet.id_str = customId
+    newTweet.isUpdating = true
+    delegate?.sent(self, newTweet: newTweet)
+    account?.sendTweet(
+      text,
+      replyId: tweet?.id_str,
+      success: { (finalTweet) -> Void in
+        if let finalTweet = finalTweet{
+          newTweet.update(finalTweet)
+        }else{
+          //self.delegate?.failedFinal(customId)
+        }
+      },
+      failure: { () -> Void in
+        //self.delegate?.failedFinal(customId)
+    })
+  }
+
+  
+}
+
+extension ComposeController:UITextViewDelegate{
+  func textViewDidChange(textView: UITextView) {
+    setTitleCount()
+  }
+  
+  
+  // Prevents typing over 140 characters
+  // Other approach (currently implemented) would be to just let 
+  // the typing happen, and not allow the tweet button to be 
+  // pressed if it's over 140.
   
   /*
-  // MARK: - Navigation
-  
-  // In a storyboard-based application, you will often want to do a little preparation before navigation
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-  // Get the new view controller using segue.destinationViewController.
-  // Pass the selected object to the new view controller.
+  func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+    if range.length + range.location > textView.text.utf16Count{
+      return false
+    }
+    var newLength = textView.text.utf16Count + text.utf16Count - range.length
+    return newLength <= 140
   }
   */
-  
 }
