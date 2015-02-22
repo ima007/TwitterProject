@@ -8,7 +8,11 @@
 
 import UIKit
 
-class TimelineViewController: UIViewController {
+protocol TimelineViewDelegate{
+  func update()
+}
+
+class TimelineViewController: TweetActionsController {
   
   let InfiniteScrollThreshold = 5
   
@@ -16,7 +20,6 @@ class TimelineViewController: UIViewController {
   
   @IBOutlet weak var tableView: UITableView!
   
-  var account:Account?
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
@@ -26,12 +29,14 @@ class TimelineViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-   
-   setToCurrentAccount()
-   setNavTitle()
-   setRefreshControl()
-   loadInitialData()
-   
+    
+    delegate = self
+    
+    setToCurrentAccount()
+    setNavTitle()
+    setRefreshControl()
+    loadInitialData()
+    
   }
   
   func setTableView(){
@@ -114,12 +119,13 @@ class TimelineViewController: UIViewController {
       if let destinationVC = segue.destinationViewController as? TweetViewController{
         if let tweetIndex = tableView.indexPathForSelectedRow()?.row {
           destinationVC.tweet = account?.timeline?[tweetIndex]
-          destinationVC.account = account 
+          destinationVC.account = account
+          destinationVC.delegate = self
         }
       }
     }
   }
-
+  
 }
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
@@ -155,43 +161,14 @@ extension TimelineViewController:UITableViewDataSource, UITableViewDelegate{
     
     return cell
   }
+  
 }
 
-// MARK: - TweetActionsDelegate
-extension TimelineViewController:TweetActionsDelegate{
-  func reply(tweet: Tweet?) {
-    let newStoryboard : UIStoryboard = UIStoryboard(name: "Compose", bundle: nil)
-    var composeController = newStoryboard.instantiateViewControllerWithIdentifier("ComposeController") as! ComposeController
-    composeController.delegate = self
-    composeController.account = account
-    composeController.tweet = tweet
-    
-    let navigationController = UINavigationController(rootViewController: composeController)
-    
-    self.presentViewController(navigationController, animated: true, completion: nil)
-  }
-  func favorite(tweet: Tweet?) {
-    tableView.reloadData()
-  }
-  func unfavorite(tweet: Tweet?) {
-    tableView.reloadData()
-  }
-  func retweet(tweet: Tweet?) {
+extension TimelineViewController:TimelineViewDelegate{
+  func update(){
+    println("Timeline updated!")
     tableView.reloadData()
   }
 }
 
-// MARK: - ComposeModalDelegate
-extension TimelineViewController:ComposeModalDelegate{
-  func dismissed(composeController:ComposeController) {
-    composeController.dismissViewControllerAnimated(true, completion: nil)
-  }
-  func sent(composeController: ComposeController, newTweet: Tweet?) {
-    if let newTweet = newTweet{
-      account?.timeline?.insert(newTweet, atIndex: 0)
-      tableView.reloadData()
-    }
-    
-    composeController.dismissViewControllerAnimated(true, completion: nil)
-  }
-}
+

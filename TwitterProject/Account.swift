@@ -38,6 +38,9 @@ class Account:Deserializable {
   
   lazy var api:TwitterClient = TwitterClient(account: self)
   
+  var retweeting = [String:String]()
+  var favoriting = [String:String]()
+  
   init(){
     
   }
@@ -131,15 +134,97 @@ class Account:Deserializable {
     api.sendTweet(params: params, success: success, failure: failure)
   }
   
-  func retweet(id:String?, success:(Tweet? -> Void), failure:()->Void){
-    api.retweet(id, success: success, failure: failure)
+  func retweet(tweet:Tweet?, success:(Tweet? -> Void), failure:()->Void){
+    if let id = tweet?.id_str {
+      let keyIndex = retweeting.indexForKey(id)
+      if keyIndex == nil {
+        retweeting.updateValue(id, forKey: id)
+        
+        api.retweet(tweet,
+          success: {newTweet -> Void in
+            self.retweeting.removeValueForKey(id)
+            tweet?.incrementRetweets()
+            success(newTweet)
+          },
+          failure: {() -> Void in
+            self.retweeting.removeValueForKey(id)
+            failure()
+        })
+      }
+    }
+  }
+  
+  func unretweet(tweet:Tweet?, success:(Tweet? -> Void), failure:()->Void){
+    if let id = tweet?.id_str {
+      let keyIndex = retweeting.indexForKey(id)
+      if keyIndex == nil {
+        retweeting.updateValue(id, forKey: id)
+        
+        api.unretweet(tweet,
+          success: {newTweet -> Void in
+            self.retweeting.removeValueForKey(id)
+            tweet?.decrementRetweets()
+            success(newTweet)
+          },
+          failure: {() -> Void in
+            self.retweeting.removeValueForKey(id)
+            failure()
+        })
+      }
+    }
+  }
+  
+  func favorite(tweet:Tweet?, success:(Tweet? -> Void), failure:()->Void){
+    favorite(tweet?.id_str,
+      success: {newTweet -> Void in
+      tweet?.incrementFavorites()
+      success(newTweet)
+    }, failure: failure)
+  }
+  
+  func unfavorite(tweet:Tweet?, success:(Tweet? -> Void), failure:()->Void){
+    unfavorite(tweet?.id_str,
+      success: {newTweet -> Void in
+        tweet?.decrementFavorites()
+        success(newTweet)
+      }, failure: failure)
   }
   
   func favorite(id:String?, success:(Tweet? -> Void), failure:()->Void){
-    api.favorite(id, success: success, failure: failure)
+    if let id = id {
+      let keyIndex = favoriting.indexForKey(id)
+      if keyIndex == nil {
+        favoriting.updateValue(id, forKey: id)
+        
+        api.favorite(id,
+          success: {tweet -> Void in
+            self.favoriting.removeValueForKey(id)
+            success(tweet)
+          },
+          failure: {() -> Void in
+            self.favoriting.removeValueForKey(id)
+            failure()
+        })
+      }
+    }
   }
   func unfavorite(id:String?, success:(Tweet? -> Void), failure:()->Void){
-    api.unfavorite(id, success: success, failure: failure)
+    if let id = id {
+      let keyIndex = favoriting.indexForKey(id)
+      if keyIndex == nil {
+        favoriting.updateValue(id, forKey: id)
+        
+        api.unfavorite(id,
+          success: {tweet -> Void in
+            self.favoriting.removeValueForKey(id)
+            success(tweet)
+          },
+          failure: {() -> Void in
+            self.favoriting.removeValueForKey(id)
+            failure()
+        })
+      }
+    }
   }
   
   func logout(){

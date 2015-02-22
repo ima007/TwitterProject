@@ -78,6 +78,7 @@ class TweetCell: UITableViewCell, TweetCellDelegate {
       dateFormatter.timeStyle = .ShortStyle
       dateLabel.text = dateFormatter.stringFromDate(date)
     }
+    
     if tweet.isUpdating{
       UIView.animateWithDuration(0.5, animations: {
         self.dateLabel.alpha = 0.4
@@ -110,39 +111,23 @@ class TweetCell: UITableViewCell, TweetCellDelegate {
   
   
   @IBAction func retweetAction(sender: AnyObject) {
+    let retweeted = tweet?.retweeted ?? false
+    if retweeted{
+      delegate?.unretweet(tweet)
+    }else{
+      delegate?.retweet(tweet)
+    }
   }
   
   
   @IBAction func favoriteAction(sender: AnyObject) {
-    if !favoriteActionIsHappening{
-      let favorited = tweet?.favorited ?? false
-      favoriteActionIsHappening = true
-      if !favorited{
-        println("favoriting")
-        account?.favorite(tweet?.id_str, success: {tweet -> Void in
-          println("favorited")
-          self.favoriteActionIsHappening = false
-          self.tweet?.incrementFavorites()
-          self.setContents(self.tweet!)
-          self.delegate?.favorite(tweet)
-          },
-          failure: { () -> Void in
-            self.favoriteActionIsHappening = false
-        })
-      }else{
-        println("unfavoriting")
-        account?.unfavorite(tweet?.id_str, success: {tweet -> Void in
-          println("unfavorited")
-          self.favoriteActionIsHappening = false
-          self.tweet?.decrementFavorites()
-          self.setContents(self.tweet!)
-          self.delegate?.unfavorite(tweet)
-          },
-          failure: { () -> Void in
-            self.favoriteActionIsHappening = false
-        })
-      }
-    }  }
+    let favorited = tweet?.favorited ?? false
+    if  favorited{
+      delegate?.unfavorite(tweet)
+    }else{
+      delegate?.favorite(tweet)
+    }
+  }
   
 
 }

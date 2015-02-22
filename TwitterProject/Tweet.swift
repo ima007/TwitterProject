@@ -22,6 +22,7 @@ class Tweet:Deserializable{
   var favorite_count:Int?
   var favorited:Bool?
   var user_mentions:[Account]?
+  var current_user_retweet:String?
   
   var isUpdating:Bool = false
   
@@ -49,6 +50,7 @@ class Tweet:Deserializable{
     account <<<< data["user"]
     text <<< data["text"]
     id_str <<< data["id_str"]
+    current_user_retweet <<< data["current_user_retweet"]
     retweet_count <<< data["retweet_count"]
     favorite_count <<< data["favorite_count"]
     favorited <<< data["favorited"]
@@ -60,7 +62,21 @@ class Tweet:Deserializable{
       user_mentions <<<<* entities["user_mentions"]
     }
   }
+  
+  class func placeholderToBeUpdated(text:String, account:Account?) -> Tweet{
+    var customId = NSUUID().UUIDString as String
+    var newTweet = Tweet()
+    newTweet.text = text
+    newTweet.account = account
+    newTweet.createdAt = NSDate()
+    newTweet.favorite_count = 0
+    newTweet.retweet_count = 0
+    newTweet.id_str = customId
+    newTweet.isUpdating = true
+    return newTweet
+  }
 
+  
   
   func update(tweet:Tweet){
     println("updating tweet")
@@ -75,7 +91,7 @@ class Tweet:Deserializable{
     createdAtUnformatted = tweet.createdAtUnformatted
     isUpdating = tweet.isUpdating
     user_mentions = tweet.user_mentions
-    delegate?.update(tweet)
+    delegate?.update(self)
   }
   
   func incrementFavorites(){

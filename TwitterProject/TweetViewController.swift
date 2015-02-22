@@ -8,10 +8,9 @@
 
 import UIKit
 
-class TweetViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class TweetViewController: TweetActionsController, UITableViewDelegate, UITableViewDataSource {
   
   var tweet:Tweet?
-  var account:Account?
   
   @IBOutlet weak var tableView: UITableView!
   
@@ -68,41 +67,10 @@ class TweetViewController: UIViewController, UITableViewDelegate, UITableViewDat
     return returnCell
   }
   
-}
-
-// MARK: - TweetActionsDelegate
-extension TweetViewController:TweetActionsDelegate{
-  func reply(tweet: Tweet?) {
-    let newStoryboard : UIStoryboard = UIStoryboard(name: "Compose", bundle: nil)
-    var composeController = newStoryboard.instantiateViewControllerWithIdentifier("ComposeController") as! ComposeController
-    composeController.delegate = self
-    composeController.account = account
-    composeController.tweet = tweet
-    
-    let navigationController = UINavigationController(rootViewController: composeController)
-    
-    self.presentViewController(navigationController, animated: true, completion: nil)
-  }
-  func favorite(tweet: Tweet?) {
-    self.tweet = tweet
+  
+  override func success(tweet: Tweet?){
+    super.success(tweet)
     tableView.reloadData()
   }
-  func unfavorite(tweet: Tweet?) {
-    self.tweet = tweet
-    tableView.reloadData()
-  }
-  func retweet(tweet: Tweet?) {
-    self.tweet = tweet
-    tableView.reloadData()
-  }
-}
-
-// MARK: - ComposeModalDelegate
-extension TweetViewController:ComposeModalDelegate{
-  func dismissed(composeController:ComposeController) {
-    composeController.dismissViewControllerAnimated(true, completion: nil)
-  }
-  func sent(composeController: ComposeController, newTweet: Tweet?) {
-    composeController.dismissViewControllerAnimated(true, completion: nil)
-  }
+  
 }

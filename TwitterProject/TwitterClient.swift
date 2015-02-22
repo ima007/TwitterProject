@@ -138,6 +138,16 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
     })
   }
   
+  func retweet(tweet:Tweet?, success: (Tweet? -> Void), failure:() -> Void){
+    if let tweetId = tweet?.id_str{
+      retweet(tweetId, success: { (retweetedTweet) -> Void in
+        tweet?.current_user_retweet = retweetedTweet?.id_str
+        success(retweetedTweet)
+      },
+      failure: failure)
+    }
+  }
+  
   func retweet(tweetId:String?, success: (Tweet? -> Void), failure:() -> Void){
     if let tweetId = tweetId{
       POST("1.1/statuses/retweet/" + tweetId + ".json",
@@ -173,7 +183,7 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
       },
       failure: {
         (operation, error) -> Void in
-        println("retweet error |||| \(error)")
+        println("favorite error |||| \(error)")
         failure()
     })
   }
@@ -194,9 +204,70 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
       },
       failure: {
         (operation, error) -> Void in
-        println("retweet error |||| \(error)")
+        println("unfavorite error |||| \(error)")
         failure()
     })
   }
   
+  func deleteTweet(tweetId:String?, success: (Tweet? -> Void), failure:() -> Void){
+    if let tweetId = tweetId{
+    POST("1.1/statuses/destroy/" + tweetId + ".json",
+      parameters: nil,
+      success:{
+        (operation, response) -> Void in
+        var tweet:Tweet?
+        //println("\(response)")
+        tweet <<<< response
+        success(tweet)
+      },
+      failure: {
+        (operation, error) -> Void in
+        println("delete error |||| \(error)")
+        failure()
+    })
+    }
+  }
+  
+  func unretweet(tweetId:String?, success: (Tweet? -> Void), failure:() -> Void){
+    var params = [String:AnyObject]()
+    if let tweetId = tweetId{
+      params["id"] = tweetId
+    }
+    params["include_my_retweet"] = 1
+    GET("1.1/statuses/show.json",
+      parameters: params,
+      success:{
+        (operation, response) -> Void in
+        var tweet:Tweet?
+        println("\(response)")
+        tweet <<<< response
+        if let retweetId = tweet?.current_user_retweet{
+          println("\(retweetId)")
+          self.deleteTweet(retweetId, success: success, failure: failure)
+        }else{
+          println("unretweet error |||| could not unwrap tweet from statuses/show.json")
+          failure()
+        }
+      },
+      failure: {
+        (operation, error) -> Void in
+        println("unretweet error w/ \(params)")
+        println("\(error)")
+        failure()
+    })
+  }
+  
+  func unretweet(tweet:Tweet?, success: (Tweet? -> Void), failure:() -> Void){
+    if let tweet = tweet, let isRetweeted = tweet.retweeted{
+      if isRetweeted{
+        if let retweetId = tweet.current_user_retweet{
+          deleteTweet(retweetId, success: success, failure: failure)
+        }else{
+          unretweet(tweet.id_str, success: success, failure: failure)
+        }
+      }
+    }
+  }
+
+
 }

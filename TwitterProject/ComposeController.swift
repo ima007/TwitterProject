@@ -107,15 +107,10 @@ class ComposeController: UIViewController {
   
   private func submit(text:String){
     var customId = NSUUID().UUIDString as String
-    var newTweet = Tweet()
-    newTweet.text = text
-    newTweet.account = account
-    newTweet.createdAt = NSDate()
-    newTweet.favorite_count = 0
-    newTweet.retweet_count = 0
-    newTweet.id_str = customId
-    newTweet.isUpdating = true
+    var newTweet = Tweet.placeholderToBeUpdated(text, account: account)
+    
     delegate?.sent(self, newTweet: newTweet)
+    
     account?.sendTweet(
       text,
       replyId: tweet?.id_str,
@@ -123,11 +118,11 @@ class ComposeController: UIViewController {
         if let finalTweet = finalTweet{
           newTweet.update(finalTweet)
         }else{
-          //self.delegate?.failedFinal(customId)
+          //Fail condition
         }
       },
       failure: { () -> Void in
-        //self.delegate?.failedFinal(customId)
+         //Fail condition
     })
   }
 

@@ -11,6 +11,7 @@ import UIKit
 protocol TweetActionsDelegate{
   func reply(tweet:Tweet?)
   func retweet(tweet:Tweet?)
+  func unretweet(tweet:Tweet?)
   func favorite(tweet:Tweet?)
   func unfavorite(tweet:Tweet?)
 }
@@ -55,18 +56,14 @@ class TweetActionsCell: UITableViewCell, TweetCellDelegate {
   private func updateFavorite(){
     if let favorited = tweet?.favorited{
       favoriteButton.tintColor = favorited ? UIColor.yellowColor() : UIColor.grayColor()
-      //favoriteButton.imageView?.twi_setImageWithName(favorited ? "favorite_on" : "favorite")
     }
   }
   
   private func updateRetweet(){
     if let retweeted = tweet?.retweeted{
       retweetButton.tintColor = retweeted ? UIColor.greenColor() : UIColor.grayColor()
-      //retweetButton.imageView?.twi_setImageWithName(retweeted ? "retweet_on" : "retweet")
     }
   }
-  
-  
   
   @IBAction func replyAction(sender: AnyObject) {
     delegate?.reply(tweet)
@@ -74,51 +71,20 @@ class TweetActionsCell: UITableViewCell, TweetCellDelegate {
   
   @IBAction func retweetAction(sender: AnyObject) {
     let retweeted = tweet?.retweeted ?? false
-    if !retweetActionIsHappening && !retweeted {
-    retweetActionIsHappening = true
-      account?.retweet(tweet?.id_str, success: {tweet -> Void in
-        self.retweetActionIsHappening = false
-        self.tweet?.incrementRetweets()
-        self.setContent(self.tweet)
-        self.delegate?.retweet(tweet)
-        },
-        failure: { () -> Void in
-        //self.tweet?.incrementRetweets()
-        self.retweetActionIsHappening = false
-      })
+    if retweeted{
+      delegate?.unretweet(tweet)
+    }else{
+      delegate?.retweet(tweet)
     }
-
+    
   }
   
   @IBAction func favoriteAction(sender: AnyObject) {
-    if !favoriteActionIsHappening{
-      let favorited = tweet?.favorited ?? false
-      favoriteActionIsHappening = true
-      if !favorited{
-        println("favoriting")
-        account?.favorite(tweet?.id_str, success: {tweet -> Void in
-          println("favorited")
-          self.favoriteActionIsHappening = false
-          self.tweet?.incrementFavorites()
-          self.setContent(self.tweet)
-          self.delegate?.favorite(tweet)
-          },
-          failure: { () -> Void in
-            self.favoriteActionIsHappening = false
-        })
-      }else{
-        println("unfavoriting")
-        account?.unfavorite(tweet?.id_str, success: {tweet -> Void in
-           println("unfavorited")
-            self.favoriteActionIsHappening = false
-            self.tweet?.decrementFavorites()
-            self.setContent(self.tweet)
-            self.delegate?.unfavorite(tweet)
-          },
-          failure: { () -> Void in
-            self.favoriteActionIsHappening = false
-        })
-      }
+    let favorited = tweet?.favorited ?? false
+    if  favorited{
+      delegate?.unfavorite(tweet)
+    }else{
+      delegate?.favorite(tweet)
     }
   }
   
