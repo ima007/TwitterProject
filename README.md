@@ -2,7 +2,7 @@
 
 This is a basic twitter app to read and compose tweets the [Twitter API](https://apps.twitter.com/).
 
-Time spent: TBD
+Time spent: 13 hours
 
 ### Features
 
@@ -22,12 +22,12 @@ Time spent: TBD
 - [X] When composing, you should have a countdown in the upper right for the tweet limit.
 - [X] After creating a new tweet, a user should be able to view it in the timeline immediately without refetching the timeline from the network.
 - [X] Retweeting and favoriting should increment the retweet and favorite count.
-- [ ] User should be able to unretweet and unfavorite and should decrement the retweet and favorite count.
+- [X] User should be able to unretweet and unfavorite and should decrement the retweet and favorite count.
 - [X] Replies should be prefixed with the username and the reply_id should be set when posting the tweet,
 - [X] User can load more tweets once they reach the bottom of the feed using infinite loading similar to the actual Twitter client.
 
 ### Walkthrough
-TBD
+![Twitter animated project demo](twitter_demo.gif)
 
 ### Installation
 * Requires Xcode 6.3 beta
