@@ -114,7 +114,7 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
   //status
   //in_reply_to_status_id
   func sendTweet(#params:[String:AnyObject]?, success: (Tweet? -> Void), failure:() -> Void){
-    POST("1.1/statuses/update",
+    POST("1.1/statuses/update.json",
       parameters: params ?? nil,
       success:{
         (operation, response) -> Void in
@@ -148,7 +148,7 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
   }
   
   func favorite(tweetId:String?, success: (Tweet? -> Void), failure:() -> Void){
-    POST("1.1/favorites/create",
+    POST("1.1/favorites/create.json",
       parameters: [["id":tweetId!]],
       success:{
         (operation, response) -> Void in
@@ -165,7 +165,7 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
   }
   
   func unfavorite(tweetId:String?, success: (Tweet? -> Void), failure:() -> Void){
-    POST("1.1/favorites/destroy",
+    POST("1.1/favorites/destroy.json",
       parameters: [["id":tweetId!]],
       success:{
         (operation, response) -> Void in

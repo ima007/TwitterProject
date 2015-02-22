@@ -10,6 +10,12 @@ import UIKit
 
 protocol ComposeModalDelegate{
   func dismissed(controller:ComposeController)
+  
+  func sent(controller:ComposeController, newTweet: Tweet?)
+  
+  func receivedFinal(tweet: Tweet?)
+  
+  func failedFinal(id:String)
 }
 
 class ComposeController: UIViewController {
@@ -22,6 +28,7 @@ class ComposeController: UIViewController {
   
   var delegate: ComposeModalDelegate?
   var account: Account?
+  var tweet: Tweet?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -43,6 +50,31 @@ class ComposeController: UIViewController {
   
 
   @IBAction func tappedSendButton(sender: AnyObject) {
+    if let text = tweetInput.text {
+      var customId = NSUUID().UUIDString as String
+      var newTweet = Tweet()
+      newTweet.text = text
+      newTweet.account = account
+      newTweet.createdAt = NSDate()
+      newTweet.favorite_count = 0
+      newTweet.retweet_count = 0
+      newTweet.id_str = customId
+      newTweet.isUpdating = true
+      delegate?.sent(self, newTweet: newTweet)
+      account?.sendTweet(
+        text,
+        replyId: tweet?.id_str,
+        success: { (finalTweet) -> Void in
+          if let finalTweet = finalTweet{
+            newTweet.update(finalTweet)
+          }else{
+            self.delegate?.failedFinal(customId)
+          }
+        },
+        failure: { () -> Void in
+          self.delegate?.failedFinal(customId)
+      })
+    }
   }
   
   

@@ -26,8 +26,8 @@ class TweetStatsCell: UITableViewCell {
   }
   
   func setContent(tweet:Tweet?){
-    retweetCountLabel.text = String(stringInterpolationSegment: tweet?.retweet_count)
-    favoriteCountLabel.text = String(stringInterpolationSegment: tweet?.favorite_count)
+    retweetCountLabel.text = String(stringInterpolationSegment: tweet?.retweet_count ?? 0)
+    favoriteCountLabel.text = String(stringInterpolationSegment: tweet?.favorite_count ?? 0)
   }
   
 }

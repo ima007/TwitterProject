@@ -23,13 +23,18 @@ class TweetDetailCell: UITableViewCell {
   
   override func awakeFromNib() {
     super.awakeFromNib()
-    // Initialization code
+    
+    autoLayoutBug()
   }
   
   override func setSelected(selected: Bool, animated: Bool) {
     super.setSelected(selected, animated: animated)
     
     // Configure the view for the selected state
+  }
+  
+  private func autoLayoutBug(){
+    self.layoutIfNeeded()
   }
   
   func setContent(tweet:Tweet?){
@@ -45,6 +50,11 @@ class TweetDetailCell: UITableViewCell {
       dateFormatter.timeStyle = .ShortStyle
       dateLabel.text = dateFormatter.stringFromDate(date)
     }
+  }
+  
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    autoLayoutBug()
   }
   
 }

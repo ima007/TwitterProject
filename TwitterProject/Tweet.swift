@@ -8,6 +8,10 @@
 
 import Foundation
 
+protocol TweetCellDelegate{
+  func update(tweet:Tweet)
+}
+
 class Tweet:Deserializable{
 
   var account:Account?
@@ -17,6 +21,9 @@ class Tweet:Deserializable{
   var retweet_count:Int?
   var favorite_count:Int?
   var favorited:Bool?
+  var isUpdating:Bool = false
+  
+  var delegate:TweetCellDelegate?
   
   private var createdAtUnformatted:String?
   lazy var createdAt:NSDate? = {
@@ -32,6 +39,10 @@ class Tweet:Deserializable{
     return Static.formatter
   }
   
+  init(){
+    
+  }
+  
   required init(data: [String : AnyObject]) {
     account <<<< data["user"]
     text <<< data["text"]
@@ -41,6 +52,20 @@ class Tweet:Deserializable{
     favorited <<< data["favorited"]
     retweeted <<< data["retweeted"]
     createdAtUnformatted <<< data["created_at"]
+  }
+
+  func update(tweet:Tweet){
+    println("updating tweet")
+    account = tweet.account
+    text = tweet.text
+    id_str = tweet.id_str
+    retweet_count = tweet.retweet_count
+    favorite_count = tweet.favorite_count
+    favorited = tweet.favorited
+    retweeted = tweet.retweeted
+    createdAtUnformatted = tweet.createdAtUnformatted
+    isUpdating = tweet.isUpdating
+    delegate?.update(tweet)
   }
   
   deinit { println("Tweet is being deinitialized") }

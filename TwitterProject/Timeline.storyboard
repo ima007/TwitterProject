@@ -159,13 +159,13 @@
                                                     <color key="textColor" red="0.58937026520000002" green="0.58937026520000002" blue="0.58937026520000002" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" misplaced="YES" text="Tweet content" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qRs-CA-Tpa">
-                                                    <rect key="frame" x="10" y="63" width="300" height="36"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="Tweet content" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qRs-CA-Tpa">
+                                                    <rect key="frame" x="10" y="68" width="300" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" text="long date" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="owi-Cp-iwn">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalCompressionResistancePriority="749" text="long date" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="owi-Cp-iwn">
                                                     <rect key="frame" x="10" y="94" width="300" height="33"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" red="0.58937026520000002" green="0.58937026520000002" blue="0.58937026520000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -179,10 +179,10 @@
                                                 <constraint firstItem="SO7-iQ-kQY" firstAttribute="leading" secondItem="YXF-ha-l23" secondAttribute="trailing" constant="5" id="NuB-46-uXj"/>
                                                 <constraint firstAttribute="trailing" secondItem="SO7-iQ-kQY" secondAttribute="trailing" constant="10" id="PWq-mo-y3g"/>
                                                 <constraint firstItem="YXF-ha-l23" firstAttribute="leading" secondItem="hNv-dw-vUb" secondAttribute="leading" constant="10" id="RhW-Fb-F3G"/>
-                                                <constraint firstItem="qRs-CA-Tpa" firstAttribute="top" secondItem="YXF-ha-l23" secondAttribute="bottom" constant="5" id="UFE-XO-blk"/>
+                                                <constraint firstItem="qRs-CA-Tpa" firstAttribute="top" secondItem="YXF-ha-l23" secondAttribute="bottom" constant="10" id="UFE-XO-blk"/>
                                                 <constraint firstItem="Kl7-07-eQY" firstAttribute="leading" secondItem="YXF-ha-l23" secondAttribute="trailing" constant="5" id="Wd0-cE-Loi"/>
                                                 <constraint firstItem="Kl7-07-eQY" firstAttribute="top" secondItem="hNv-dw-vUb" secondAttribute="top" constant="10" id="Wtc-qE-7WS"/>
-                                                <constraint firstItem="owi-Cp-iwn" firstAttribute="top" secondItem="qRs-CA-Tpa" secondAttribute="bottom" constant="10" id="dMm-EW-cYI"/>
+                                                <constraint firstItem="owi-Cp-iwn" firstAttribute="top" secondItem="qRs-CA-Tpa" secondAttribute="bottom" constant="5" id="dMm-EW-cYI"/>
                                                 <constraint firstItem="YXF-ha-l23" firstAttribute="top" secondItem="hNv-dw-vUb" secondAttribute="top" constant="10" id="eE2-H6-U9K"/>
                                                 <constraint firstAttribute="bottom" secondItem="owi-Cp-iwn" secondAttribute="bottom" constant="10" id="hCq-l9-Kjl"/>
                                                 <constraint firstAttribute="trailing" secondItem="qRs-CA-Tpa" secondAttribute="trailing" constant="10" id="hsL-dQ-1hX"/>

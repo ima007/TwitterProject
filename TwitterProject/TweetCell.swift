@@ -10,7 +10,7 @@ import UIKit
 
 let dateFormatter = NSDateFormatter()
 
-class TweetCell: UITableViewCell {
+class TweetCell: UITableViewCell, TweetCellDelegate {
   @IBOutlet weak var tweetImage: UIImageView!
 
   @IBOutlet weak var nameLabel: UILabel!
@@ -61,6 +61,24 @@ class TweetCell: UITableViewCell {
       dateFormatter.timeStyle = .ShortStyle
       dateLabel.text = dateFormatter.stringFromDate(date)
     }
+    if tweet.isUpdating{
+      UIView.animateWithDuration(0.5, animations: {
+        self.dateLabel.alpha = 0.4
+        self.contentLabel.alpha = 0.4
+        self.nameLabel.alpha = 0.4
+      })
+    }else{
+      UIView.animateWithDuration(0.5, animations: {
+        self.dateLabel.alpha = 1.0
+        self.contentLabel.alpha = 1.0
+        self.nameLabel.alpha = 1.0
+      })
+    }
+  }
+  
+  func update(tweet: Tweet) {
+    println("updating tweet view")
+    setContents(tweet)
   }
   
   override func layoutSubviews() {

@@ -158,4 +158,24 @@ extension TimelineViewController:ComposeModalDelegate{
   func dismissed(composeController:ComposeController) {
     composeController.dismissViewControllerAnimated(true, completion: nil)
   }
+  func sent(composeController: ComposeController, newTweet: Tweet?) {
+    if let newTweet = newTweet{
+      account?.timeline?.insert(newTweet, atIndex: 0)
+      tableView.reloadData()
+      account?.timeline?[0].delegate = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? TweetCell
+    }
+    
+    composeController.dismissViewControllerAnimated(true, completion: nil)
+  }
+  func receivedFinal(tweet: Tweet?){
+    var fitlered = account?.timeline?.filter { $0.id_str == tweet?.id_str }
+    if fitlered?.count > 0{
+      println("\(fitlered?[0].id_str)")
+      tableView.reloadData()
+    }
+    
+  }
+  func failedFinal(id:String){
+    
+  }
 }
