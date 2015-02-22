@@ -100,7 +100,15 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
       success:{
         (operation, response) -> Void in
         var tweets:[Tweet]?
-        //println("\(response)")
+        if let tweetable = tweets{
+        for tweet in tweetable{
+          if let retweeted = tweet.retweeted {
+            if retweeted {
+              println("\(tweet)")
+            }
+          }
+        }
+        }
         tweets <<<<* response
         success(tweets)
       },
@@ -131,25 +139,31 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
   }
   
   func retweet(tweetId:String?, success: (Tweet? -> Void), failure:() -> Void){
-    POST("1.1/statuses/retweet/" + tweetId!,
-      parameters: nil,
-      success:{
-        (operation, response) -> Void in
-        var tweet:Tweet?
-        //println("\(response)")
-        tweet <<<< response
-        success(tweet)
-      },
-      failure: {
-        (operation, error) -> Void in
-        println("retweet error |||| \(error)")
-        failure()
-    })
+    if let tweetId = tweetId{
+      POST("1.1/statuses/retweet/" + tweetId + ".json",
+        parameters: nil,
+        success:{
+          (operation, response) -> Void in
+          var tweet:Tweet?
+          println("\(response)")
+          tweet <<<< response
+          success(tweet)
+        },
+        failure: {
+          (operation, error) -> Void in
+          println("retweet error |||| \(error)")
+          failure()
+      })
+    }
   }
   
   func favorite(tweetId:String?, success: (Tweet? -> Void), failure:() -> Void){
+    var params = [String:AnyObject]()
+    if let tweetId = tweetId{
+      params["id"] = tweetId
+    }
     POST("1.1/favorites/create.json",
-      parameters: [["id":tweetId!]],
+      parameters: params,
       success:{
         (operation, response) -> Void in
         var tweet:Tweet?
@@ -165,8 +179,12 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
   }
   
   func unfavorite(tweetId:String?, success: (Tweet? -> Void), failure:() -> Void){
+    var params = [String:AnyObject]()
+    if let tweetId = tweetId{
+      params["id"] = tweetId
+    }
     POST("1.1/favorites/destroy.json",
-      parameters: [["id":tweetId!]],
+      parameters: params,
       success:{
         (operation, response) -> Void in
         var tweet:Tweet?

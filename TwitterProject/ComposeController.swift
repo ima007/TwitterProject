@@ -12,10 +12,7 @@ protocol ComposeModalDelegate{
   func dismissed(controller:ComposeController)
   
   func sent(controller:ComposeController, newTweet: Tweet?)
-  
-  func receivedFinal(tweet: Tweet?)
-  
-  func failedFinal(id:String)
+
 }
 
 class ComposeController: UIViewController {
@@ -36,11 +33,35 @@ class ComposeController: UIViewController {
     profileImage.twi_setImageWithUrl(account?.profileImageNsUrl)
     profileName.text = account?.name
     profileScreenName.text = account?.screenNameWithAt
+    
+    setMentions()
   }
   
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
+  }
+  
+  func setMentions(){
+    if let tweet = tweet{
+      var mentions = [String]()
+      if let screenName = tweet.account?.screenNameWithAt{
+        mentions.append(screenName)
+        tweetInput.text = screenName
+        
+        if let userMentions = tweet.user_mentions{
+          for account in userMentions{
+            if let screenNameWithAt = account.screenNameWithAt{
+              if !contains(mentions, screenNameWithAt) {
+                tweetInput.text = tweetInput.text + " "+screenNameWithAt
+                mentions.append(screenNameWithAt)
+              }
+            }
+          }
+        }
+        tweetInput.text = tweetInput.text + " "
+      }
+    }
   }
   
   
@@ -68,11 +89,11 @@ class ComposeController: UIViewController {
           if let finalTweet = finalTweet{
             newTweet.update(finalTweet)
           }else{
-            self.delegate?.failedFinal(customId)
+            //self.delegate?.failedFinal(customId)
           }
         },
         failure: { () -> Void in
-          self.delegate?.failedFinal(customId)
+          //self.delegate?.failedFinal(customId)
       })
     }
   }

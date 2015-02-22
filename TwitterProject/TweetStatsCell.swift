@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TweetStatsCell: UITableViewCell {
+class TweetStatsCell: UITableViewCell, TweetCellDelegate {
   
   @IBOutlet weak var retweetCountLabel: UILabel!
   
@@ -23,6 +23,10 @@ class TweetStatsCell: UITableViewCell {
     super.setSelected(selected, animated: animated)
     
     // Configure the view for the selected state
+  }
+  
+  func update(tweet:Tweet){
+    setContent(tweet)
   }
   
   func setContent(tweet:Tweet?){

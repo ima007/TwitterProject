@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TweetDetailCell: UITableViewCell {
+class TweetDetailCell: UITableViewCell, TweetCellDelegate {
   
   
   @IBOutlet weak var profileImage: UIImageView!
@@ -55,6 +55,11 @@ class TweetDetailCell: UITableViewCell {
   override func layoutSubviews() {
     super.layoutSubviews()
     autoLayoutBug()
+  }
+  
+  func update(tweet: Tweet) {
+    println("updating tweet view")
+    setContent(tweet)
   }
   
 }

@@ -24,6 +24,7 @@ class Account:Deserializable {
   var description:String?
   var profileBackgroundColor:UIColor?
   var profileImageUrl:String?
+  var user_mentions:[Account]?
   lazy var profileImageNsUrl:NSURL? = {
     [unowned self] in
     if let profileImageUrl = self.profileImageUrl{
@@ -132,6 +133,13 @@ class Account:Deserializable {
   
   func retweet(id:String?, success:(Tweet? -> Void), failure:()->Void){
     api.retweet(id, success: success, failure: failure)
+  }
+  
+  func favorite(id:String?, success:(Tweet? -> Void), failure:()->Void){
+    api.favorite(id, success: success, failure: failure)
+  }
+  func unfavorite(id:String?, success:(Tweet? -> Void), failure:()->Void){
+    api.unfavorite(id, success: success, failure: failure)
   }
   
   func logout(){

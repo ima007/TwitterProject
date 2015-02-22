@@ -21,6 +21,8 @@ class Tweet:Deserializable{
   var retweet_count:Int?
   var favorite_count:Int?
   var favorited:Bool?
+  var user_mentions:[Account]?
+  
   var isUpdating:Bool = false
   
   var delegate:TweetCellDelegate?
@@ -52,12 +54,19 @@ class Tweet:Deserializable{
     favorited <<< data["favorited"]
     retweeted <<< data["retweeted"]
     createdAtUnformatted <<< data["created_at"]
+    var entities:[String : AnyObject]?
+    entities <<< data["entities"]
+    if let entities = entities{
+      user_mentions <<<<* entities["user_mentions"]
+    }
   }
 
+  
   func update(tweet:Tweet){
     println("updating tweet")
     account = tweet.account
     text = tweet.text
+    println("\(tweet.id_str)")
     id_str = tweet.id_str
     retweet_count = tweet.retweet_count
     favorite_count = tweet.favorite_count
@@ -65,7 +74,48 @@ class Tweet:Deserializable{
     retweeted = tweet.retweeted
     createdAtUnformatted = tweet.createdAtUnformatted
     isUpdating = tweet.isUpdating
+    user_mentions = tweet.user_mentions
     delegate?.update(tweet)
+  }
+  
+  func incrementFavorites(){
+    favorited = true
+    if let favoriteCount = favorite_count{
+      favorite_count = favoriteCount + 1
+    }else{
+      favorite_count = 1
+    }
+    delegate?.update(self)
+  }
+  
+  func incrementRetweets(){
+    retweeted = true
+    if let retweetCount = retweet_count{
+      retweet_count = retweetCount + 1
+    }else{
+      retweet_count = 0
+    }
+    delegate?.update(self)
+  }
+  
+  func decrementFavorites(){
+    favorited = false
+    if let favoriteCount = favorite_count{
+      favorite_count = favoriteCount - 1
+    }else{
+      favorite_count = 0
+    }
+    delegate?.update(self)
+  }
+  
+  func decrementRetweets(){
+    retweeted = false
+    if let retweetCount = retweet_count{
+      retweet_count = retweetCount - 1
+    }else{
+      retweet_count = 0
+    }
+    delegate?.update(self)
   }
   
   deinit { println("Tweet is being deinitialized") }

@@ -11,6 +11,7 @@ import UIKit
 class TweetViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
   var tweet:Tweet?
+  var account:Account?
   
   @IBOutlet weak var tableView: UITableView!
   
@@ -21,9 +22,8 @@ class TweetViewController: UIViewController, UITableViewDelegate, UITableViewDat
     tableView.delegate = self
     tableView.dataSource = self
     tableView.rowHeight = UITableViewAutomaticDimension
-    // Need to set estimated height to *something* to allow height Automatic Dimension
-    // to take place.
     tableView.estimatedRowHeight = 100
+    tableView.tableFooterView = UIView(frame:CGRectZero)
     
 
   }
@@ -55,6 +55,10 @@ class TweetViewController: UIViewController, UITableViewDelegate, UITableViewDat
       }
     case 2:
       if let cell = tableView.dequeueReusableCellWithIdentifier("TweetActionsCell") as? TweetActionsCell{
+        cell.setContent(tweet)
+        cell.delegate = self
+        cell.account = account
+        tweet?.delegate = cell
         returnCell = cell
       }
     default:
@@ -64,4 +68,41 @@ class TweetViewController: UIViewController, UITableViewDelegate, UITableViewDat
     return returnCell
   }
   
+}
+
+// MARK: - TweetActionsDelegate
+extension TweetViewController:TweetActionsDelegate{
+  func reply(tweet: Tweet?) {
+    let newStoryboard : UIStoryboard = UIStoryboard(name: "Compose", bundle: nil)
+    var composeController = newStoryboard.instantiateViewControllerWithIdentifier("ComposeController") as! ComposeController
+    composeController.delegate = self
+    composeController.account = account
+    composeController.tweet = tweet
+    
+    let navigationController = UINavigationController(rootViewController: composeController)
+    
+    self.presentViewController(navigationController, animated: true, completion: nil)
+  }
+  func favorite(tweet: Tweet?) {
+    self.tweet = tweet
+    tableView.reloadData()
+  }
+  func unfavorite(tweet: Tweet?) {
+    self.tweet = tweet
+    tableView.reloadData()
+  }
+  func retweet(tweet: Tweet?) {
+    self.tweet = tweet
+    tableView.reloadData()
+  }
+}
+
+// MARK: - ComposeModalDelegate
+extension TweetViewController:ComposeModalDelegate{
+  func dismissed(composeController:ComposeController) {
+    composeController.dismissViewControllerAnimated(true, completion: nil)
+  }
+  func sent(composeController: ComposeController, newTweet: Tweet?) {
+    composeController.dismissViewControllerAnimated(true, completion: nil)
+  }
 }

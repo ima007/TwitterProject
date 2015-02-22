@@ -114,6 +114,7 @@ class TimelineViewController: UIViewController {
       if let destinationVC = segue.destinationViewController as? TweetViewController{
         if let tweetIndex = tableView.indexPathForSelectedRow()?.row {
           destinationVC.tweet = account?.timeline?[tweetIndex]
+          destinationVC.account = account 
         }
       }
     }
@@ -147,9 +148,36 @@ extension TimelineViewController:UITableViewDataSource, UITableViewDelegate{
     
     if let tweet = account?.timeline?[indexPath.row]{
       cell.setContents(tweet)
+      cell.account = account
+      cell.delegate = self
+      tweet.delegate = cell
     }
     
     return cell
+  }
+}
+
+// MARK: - TweetActionsDelegate
+extension TimelineViewController:TweetActionsDelegate{
+  func reply(tweet: Tweet?) {
+    let newStoryboard : UIStoryboard = UIStoryboard(name: "Compose", bundle: nil)
+    var composeController = newStoryboard.instantiateViewControllerWithIdentifier("ComposeController") as! ComposeController
+    composeController.delegate = self
+    composeController.account = account
+    composeController.tweet = tweet
+    
+    let navigationController = UINavigationController(rootViewController: composeController)
+    
+    self.presentViewController(navigationController, animated: true, completion: nil)
+  }
+  func favorite(tweet: Tweet?) {
+    tableView.reloadData()
+  }
+  func unfavorite(tweet: Tweet?) {
+    tableView.reloadData()
+  }
+  func retweet(tweet: Tweet?) {
+    tableView.reloadData()
   }
 }
 
@@ -162,20 +190,8 @@ extension TimelineViewController:ComposeModalDelegate{
     if let newTweet = newTweet{
       account?.timeline?.insert(newTweet, atIndex: 0)
       tableView.reloadData()
-      account?.timeline?[0].delegate = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? TweetCell
     }
     
     composeController.dismissViewControllerAnimated(true, completion: nil)
-  }
-  func receivedFinal(tweet: Tweet?){
-    var fitlered = account?.timeline?.filter { $0.id_str == tweet?.id_str }
-    if fitlered?.count > 0{
-      println("\(fitlered?[0].id_str)")
-      tableView.reloadData()
-    }
-    
-  }
-  func failedFinal(id:String){
-    
   }
 }

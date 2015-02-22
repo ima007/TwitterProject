@@ -12,6 +12,10 @@ extension UIImageView{
       self.setImageWithURL(url)
     }
   }
+  
+  func twi_setImageWithName(named:String){
+    self.image = UIImage(named: named)
+  }
 }
 
 extension UIColor {
