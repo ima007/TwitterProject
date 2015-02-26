@@ -33,11 +33,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   func userDidLogin(){
     println("user did login")
+    let storyboard = UIStoryboard(name: "Hamburger", bundle: nil)
+    let controller = storyboard.instantiateViewControllerWithIdentifier("HamburgerController") as! HamburgerController
+    
+  
+    window?.rootViewController = controller
+    window?.makeKeyAndVisible()
+    /*
+    println("user did login")
     let storyboard = UIStoryboard(name: "Timeline", bundle: nil)
     let controller = storyboard.instantiateInitialViewController() as! UINavigationController
     
     window?.rootViewController = controller
     window?.makeKeyAndVisible()
+    */
   }
   
   func userDidLogout(){

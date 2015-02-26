@@ -16,13 +16,13 @@ class TweetActionsController: UIViewController, TweetActionsDelegate, ComposeMod
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    // Do any additional setup after loading the view.
   }
   
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
   }
+
   
   func reply(tweet: Tweet?) {
     let newStoryboard : UIStoryboard = UIStoryboard(name: "Compose", bundle: nil)

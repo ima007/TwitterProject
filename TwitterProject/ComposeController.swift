@@ -51,8 +51,8 @@ class ComposeController: UIViewController {
   
   func setTitleCount(){
     if let text = tweetInput.text {
-      characterCountLabel.text = String(text.utf16Count)
-      if text.utf16Count > MaxCharLength {
+      characterCountLabel.text = String(count(text.utf16))
+      if count(text.utf16) > MaxCharLength {
         characterCountLabel.textColor = UIColor.redColor()
       }else{
         characterCountLabel.textColor = UIColor.grayColor()
@@ -92,7 +92,7 @@ class ComposeController: UIViewController {
 
   @IBAction func tappedSendButton(sender: AnyObject) {
     if let text = tweetInput.text {
-      if tweetInput.text.utf16Count <= MaxCharLength  {
+      if count(tweetInput.text.utf16) <= MaxCharLength  {
         submit(text)
       }else{
         showLengthError()
