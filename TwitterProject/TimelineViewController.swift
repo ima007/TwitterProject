@@ -12,11 +12,22 @@ protocol TimelineViewDelegate{
   func update()
 }
 
+protocol TimelineScrollDelegate{
+  func scrollingUp(scrollView:UIScrollView)
+  func scrollingDown(scrollView:UIScrollView)
+  func scrollDidEndDecelerating(scrollView:UIScrollView)
+  func scrollWillBeginDecelerating(scrollView:UIScrollView)
+  func endRefreshing()
+}
+
 class TimelineViewController: TweetActionsController {
   
-  let InfiniteScrollThreshold = 5
+  let InfiniteScrollThreshold = 10
   
   var refreshControl:UIRefreshControl!
+  var scrollDelegate:TimelineScrollDelegate?
+  
+  var lastContentOffset:CGFloat = 0
   
   @IBOutlet weak var tableView: UITableView!
   
@@ -90,8 +101,10 @@ class TimelineViewController: TweetActionsController {
     account?.getTimeline(timelineType, direction: TimelineDirection.NewerTweets, success: {(tweets)->Void in
       self.tableView.reloadData()
       self.refreshControl.endRefreshing()
+      self.scrollDelegate?.endRefreshing()
       }, failure:{ () -> Void in
       self.refreshControl.endRefreshing()
+      self.scrollDelegate?.endRefreshing()
     })
   }
   
@@ -143,7 +156,7 @@ extension TimelineViewController:UITableViewDataSource, UITableViewDelegate{
   func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath){
     if let count = getTimeline()?.count{
       if indexPath.row == count - InfiniteScrollThreshold {
-        account?.getTimeline(timelineType, direction: TimelineDirection.OlderTweets, success: {(tweets)->Void in
+        account?.getTimeline(timelineType, direction: TimelineDirection.OlderTweets, screen_name: screen_name, success: {(tweets)->Void in
           self.tableView.reloadData()
           }, failure:{ () -> Void in })
       }
@@ -162,7 +175,6 @@ extension TimelineViewController:UITableViewDataSource, UITableViewDelegate{
       case .User:
         if let userTimeline = account?.userTimelines[screen_name!]{
           timeline = userTimeline
-          println("shane timeline")
         }else{
           println("sorry dude \(screen_name)")
         }
@@ -190,6 +202,24 @@ extension TimelineViewController:UITableViewDataSource, UITableViewDelegate{
     }
     
     return cell
+  }
+  
+
+  func scrollViewDidScroll(scrollView: UIScrollView) {
+    if lastContentOffset > scrollView.contentOffset.y{
+      scrollDelegate?.scrollingUp(scrollView)
+    } else if lastContentOffset < scrollView.contentOffset.y{
+      scrollDelegate?.scrollingDown(scrollView)
+    }
+    lastContentOffset = scrollView.contentOffset.y;
+  }
+  
+  func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+    scrollDelegate?.scrollDidEndDecelerating(scrollView)
+  }
+  
+  func scrollViewWillBeginDecelerating(scrollView: UIScrollView) {
+    scrollDelegate?.scrollWillBeginDecelerating(scrollView)
   }
   
 }

@@ -4,7 +4,7 @@ This is a basic twitter app to read and compose tweets the [Twitter API](https:/
 
 Time spent: X hours
 
-### Features
+### Week 4 Features
 
 - Hamburger menu
   - [X] Dragging anywhere in the view should reveal the menu.

@@ -35,9 +35,15 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
   var containerInView: CGPoint!
   var containerOutOfView: CGPoint!
   
+  var menuOriginalCenter:CGPoint!
+  var menuInView:CGPoint!
+  var menuOutOfView:CGPoint!
+  
   override func viewDidLoad() {
     super.viewDidLoad()
-    println("loaded!")
+    
+    view.backgroundColor = UIColor(twitterHex: "75B4FC")
+    tableView.backgroundColor = UIColor.clearColor()
     
     setInitialContainerView()
     
@@ -50,8 +56,9 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
   private func setTableView(){
     tableView.delegate =  self
     tableView.dataSource = self
-    tableView.rowHeight = UITableViewAutomaticDimension
-    tableView.estimatedRowHeight = 50
+    tableView.rowHeight = 100
+    //tableView.estimatedRowHeight = 50
+    tableView.tableFooterView = UIView()
   }
   
   private func setPanGestureRecognizer(){
@@ -124,18 +131,15 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
   
   private func updateContainerViewTo(timelineType: TimelineType){
     var timelineController: UINavigationController?
-    var newController = false
     switch timelineType{
     case .Home:
       if(homeController == nil){
         homeController = initTimelineViewController(timelineType)
-        //newController = true
       }
       timelineController = homeController
     case .Mentions:
       if(mentionsController == nil){
         mentionsController = initTimelineViewController(timelineType)
-        //newController = true
       }
       timelineController = mentionsController
     default:
@@ -184,16 +188,15 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
     if containerOutOfView == nil{
       containerOutOfView = CGPoint(x: containerInView.x + containerView.frame.width - 40, y:containerInView.y)
     }
+    if menuInView == nil{
+      menuInView = tableView.center
+    }
+    if menuOutOfView == nil{
+      menuOutOfView = CGPoint(x: menuInView.x, y: menuInView.y - 320)
+      tableView.center = menuOutOfView
+    }
   }
   
-  func openHamburgerMenuViaRotation(sender: UIRotationGestureRecognizer){
-    var point = sender.locationInView(view)
-    var rotation = sender.rotation
-    var velocity = sender.velocity
-    
-    containerView.transform = CGAffineTransformRotate(containerView.transform, rotation);
-    sender.rotation = 0.0;
-  }
   
   func openHamburgerMenu(sender: UIPanGestureRecognizer){
     setOriginalPoints()
@@ -206,15 +209,20 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
     switch(sender.state){
     case .Began:
       containerOriginalCenter = containerView.center
+      menuOriginalCenter = tableView.center
       break;
     case .Changed:
       var x = containerOriginalCenter.x + translation.x
+      var y = menuOriginalCenter.y + translation.x
       containerView.center = CGPoint(x: x, y: containerOriginalCenter.y)
+      tableView.center = CGPoint(x: menuOriginalCenter.x, y: y)
       break;
     case .Ended:
       if velocity.x > 0{
         UIView.animateWithDuration(0.25, animations: { () -> Void in
           self.containerView.center = self.containerOutOfView
+          self.tableView.center = self.menuInView
+          self.view.layoutIfNeeded()
         })
       }else if velocity.x < 0 {
         showContainer()
@@ -228,6 +236,14 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
   private func showContainer(){
     UIView.animateWithDuration(0.25, animations: { () -> Void in
       self.containerView.center = self.containerInView
+      self.tableView.center = self.menuOutOfView
+      self.view.layoutIfNeeded()
+      },
+      completion: {(completed) -> Void in
+        // TODO: Determine why table cell selections don't return the
+        // tableview to the "out of view" position. This is a temp. hack
+        // to get it to work.
+       self.tableView.center = self.menuOutOfView
     })
   }
   
@@ -238,6 +254,11 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
   
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = UITableViewCell()
+    let backgroundView = UIView(frame:CGRect(x: 0,y: 0,width: 10,height: 10))
+    backgroundView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.2)
+    cell.selectedBackgroundView = backgroundView
+    cell.backgroundColor = UIColor.clearColor()
+    cell.textLabel?.textColor = UIColor.whiteColor()
     switch indexPath.row{
     case 0:
       cell.textLabel?.text = "Home"

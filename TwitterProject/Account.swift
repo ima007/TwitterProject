@@ -10,6 +10,7 @@ import Foundation
 
 class Account:Deserializable {
   var dictionary:NSDictionary?
+  var statuses_count:Int?
   var followers_count:Int?
   var friends_count:Int?
   var name:String?
@@ -23,12 +24,22 @@ class Account:Deserializable {
   var location:String?
   var description:String?
   var profileBackgroundColor:UIColor?
+  var profileTextColor:UIColor?
+  var profileBackgroundUrl:String?
   var profileImageUrl:String?
   var user_mentions:[Account]?
   lazy var profileImageNsUrl:NSURL? = {
     [unowned self] in
     if let profileImageUrl = self.profileImageUrl{
       return NSURL(string: profileImageUrl)
+    }else{
+      return nil
+    }
+  }()
+  lazy var profielBackgroudnImageNsUrl:NSURL? = {
+    [unowned self] in
+    if let profileBackgroundUrl = self.profileBackgroundUrl{
+      return NSURL(string: profileBackgroundUrl)
     }else{
       return nil
     }
@@ -50,12 +61,15 @@ class Account:Deserializable {
   required init(data: [String : AnyObject]) {
     description <<< data["profile_background_color"]
     profileImageUrl <<< data["profile_image_url"]
+    profileBackgroundUrl <<< data["profile_background_image_url"]
     name <<< data["name"]
     location <<< data["location"]
     friends_count <<< data["friends_count"]
     followers_count <<< data["followers_count"]
     screen_name <<< data["screen_name"]
+    statuses_count <<< data["statuses_count"]
     setBackgroundColor(data)
+    setTextColor(data)
     dictionary = data
   }
   
@@ -65,6 +79,16 @@ class Account:Deserializable {
     if let backgroundColorHex = backgroundColorHex{
       if count(backgroundColorHex) == 6 {
         profileBackgroundColor = UIColor(twitterHex: backgroundColorHex.uppercaseString)
+      }
+    }
+  }
+  
+  private func setTextColor(data: [String: AnyObject]){
+    var textColorHex:String?
+    textColorHex <<< data["profile_text_color"]
+    if let textColorHex = textColorHex{
+      if count(textColorHex) == 6 {
+        profileTextColor = UIColor(twitterHex: textColorHex.uppercaseString)
       }
     }
   }
