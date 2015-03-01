@@ -39,14 +39,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
     window?.rootViewController = controller
     window?.makeKeyAndVisible()
-    /*
-    println("user did login")
-    let storyboard = UIStoryboard(name: "Timeline", bundle: nil)
-    let controller = storyboard.instantiateInitialViewController() as! UINavigationController
-    
-    window?.rootViewController = controller
-    window?.makeKeyAndVisible()
-    */
   }
   
   func userDidLogout(){

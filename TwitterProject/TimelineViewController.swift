@@ -20,6 +20,7 @@ class TimelineViewController: TweetActionsController {
   
   @IBOutlet weak var tableView: UITableView!
   
+  var timelineType:TimelineType?
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
@@ -55,7 +56,8 @@ class TimelineViewController: TweetActionsController {
   
   func setNavTitle(){
     let label = UILabel()
-    label.text = "Home"
+    //TODO: More robust handling for timeline types
+    label.text = timelineType == .Mentions ? "Mentions" : "Home"
     label.textColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
     label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
     navigationController?.navigationItem.titleView = label
@@ -64,10 +66,11 @@ class TimelineViewController: TweetActionsController {
   
   func loadInitialData(){
     //Load new data
-    account?.getHomeTimeline({
+    account?.getTimeline(timelineType, direction: TimelineDirection.AllTweets, success:{
       (tweets) -> Void in
       self.tableView.reloadData()
-      }, failure: {()-> Void in
+      },
+      failure: {()-> Void in
     })
   }
   
@@ -82,7 +85,7 @@ class TimelineViewController: TweetActionsController {
   
   //Pull to refresh, add new tweets
   func addNewTweets(sender:AnyObject){
-    account?.getHomeTimeline(TimelineType.NewerTweets, success: {(tweets)->Void in
+    account?.getTimeline(timelineType, direction: TimelineDirection.NewerTweets, success: {(tweets)->Void in
       self.tableView.reloadData()
       self.refreshControl.endRefreshing()
       }, failure:{ () -> Void in
@@ -138,7 +141,7 @@ extension TimelineViewController:UITableViewDataSource, UITableViewDelegate{
   func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath){
     if let count = account?.timeline?.count{
       if indexPath.row == count - InfiniteScrollThreshold {
-        account?.getHomeTimeline(TimelineType.OlderTweets, success: {(tweets)->Void in
+        account?.getTimeline(timelineType, direction: TimelineDirection.OlderTweets, success: {(tweets)->Void in
           self.tableView.reloadData()
           }, failure:{ () -> Void in })
       }
@@ -152,7 +155,20 @@ extension TimelineViewController:UITableViewDataSource, UITableViewDelegate{
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier("TweetCell") as! TweetCell
     
-    if let tweet = account?.timeline?[indexPath.row]{
+    var timeline = account?.timeline
+    
+    if let timelineType = timelineType{
+      switch timelineType{
+      case .Home:
+        timeline = account?.timeline
+      case .Mentions:
+        timeline = account?.mentions
+      default:
+        break
+      }
+    }
+    
+    if let tweet = timeline?[indexPath.row]{
       cell.setContents(tweet)
       cell.account = account
       cell.delegate = self

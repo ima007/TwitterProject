@@ -151,16 +151,36 @@
                     </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="uxl-HK-UOS" id="cwM-Ni-YBX"/>
+                        <segue destination="AaJ-kZ-R7Z" kind="push" identifier="profileViewSegue" id="S4T-z2-uKo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7oV-p2-b6S" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="632" y="166"/>
         </scene>
+        <!--Profile View Controller-->
+        <scene sceneID="szN-uK-8F9">
+            <objects>
+                <viewController id="AaJ-kZ-R7Z" customClass="ProfileViewController" customModule="TwitterProject" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1cx-UQ-ptt"/>
+                        <viewControllerLayoutGuide type="bottom" id="ajC-N3-AcH"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="KGO-7r-ayj">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="IbR-YY-X4c"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sSZ-wT-k8l" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1068" y="-483"/>
+        </scene>
         <!--Tweet View Controller-->
         <scene sceneID="FjR-PJ-2RR">
             <objects>
-                <viewController id="1cC-ap-5qn" customClass="TweetViewController" customModule="TwitterProject" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TweetViewController" id="1cC-ap-5qn" customClass="TweetViewController" customModule="TwitterProject" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="eM6-YL-mzS"/>
                         <viewControllerLayoutGuide type="bottom" id="PSb-DU-ylB"/>

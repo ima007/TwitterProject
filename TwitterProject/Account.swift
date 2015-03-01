@@ -35,6 +35,7 @@ class Account:Deserializable {
   }()
 
   var timeline:[Tweet]?
+  var mentions:[Tweet]?
   
   lazy var api:TwitterClient = TwitterClient(account: self)
   
@@ -67,25 +68,17 @@ class Account:Deserializable {
     }
   }
   
-  func getHomeTimeline(success:([Tweet]? -> Void), failure:()->Void){
-    println("getting home timline")
-    api.getHomeTimeline({(tweets) -> Void in
-        self.timeline = tweets
-        success(tweets)
-      }, failure: failure)
-  }
-  
-  private func getTimelineTypeParams(type:TimelineType?) -> [String:String]?{
+  private func getTimelineTypeParams(#tweets:[Tweet]?, direction:TimelineDirection?) -> [String:String]?{
     var tweet_id:String?
     var load_type:String?
     var params:[String:String]?
-    if let type = type{
-      switch type{
-      case TimelineType.OlderTweets:
-        tweet_id = timeline?.last?.id_str
+    if let direction = direction{
+      switch direction{
+      case TimelineDirection.OlderTweets:
+        tweet_id = tweets?.last?.id_str
         load_type = "max_id"
-      case TimelineType.NewerTweets:
-        tweet_id = timeline?.first?.id_str
+      case TimelineDirection.NewerTweets:
+        tweet_id = tweets?.first?.id_str
         load_type = "since_id"
       default:
         break;
@@ -98,26 +91,44 @@ class Account:Deserializable {
     return params
   }
   
-  func getHomeTimeline(type: TimelineType?,success:([Tweet]? -> Void), failure:()->Void){
-    println("getting home timline with params")
-
-    var params = getTimelineTypeParams(type)
-
-    api.getHomeTimeline(params: params, success: {(tweets) -> Void in
-      if let type = type, let tweets = tweets{
-        switch type{
-        case TimelineType.OlderTweets:
-          self.timeline?.extend(tweets)
-        case TimelineType.NewerTweets:
-          self.timeline?.splice(tweets, atIndex: 0)
-        default:
-          self.timeline = tweets
-          break;
-        }
+  private func handleTimelineSuccess(direction: TimelineDirection?, inout originalTimeline:[Tweet]?, responseTweets:[Tweet]?){
+    if let responseTweets = responseTweets, let direction = direction{
+      switch direction{
+      case TimelineDirection.OlderTweets:
+        originalTimeline?.extend(responseTweets)
+      case TimelineDirection.NewerTweets:
+        originalTimeline?.splice(responseTweets, atIndex: 0)
+      default:
+        originalTimeline = responseTweets
+        break;
       }
-      
-      success(tweets)
-      }, failure: failure)
+    }
+  }
+  
+  func getTimeline(type: TimelineType?, direction: TimelineDirection?,success:([Tweet]? -> Void), failure:()->Void){
+    if let type = type{
+      switch type{
+      case TimelineType.Home:
+        api.getTimeline("home",
+          params: getTimelineTypeParams(tweets: timeline, direction: direction),
+          success: {(tweets) -> Void in
+            self.handleTimelineSuccess(direction, originalTimeline: &self.timeline, responseTweets:tweets)
+            success(tweets)
+          },
+          failure: failure)
+      case TimelineType.Mentions:
+        api.getTimeline("mentions",
+          params: getTimelineTypeParams(tweets: mentions, direction: direction),
+          success: {(tweets) -> Void in
+            self.handleTimelineSuccess(direction, originalTimeline: &self.mentions, responseTweets:tweets)
+            success(tweets)
+          },
+          failure: failure)
+      default:
+        break
+      }
+    }
+
   }
   
   /*

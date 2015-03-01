@@ -9,8 +9,14 @@
 import Foundation
 
 enum TimelineType{
+  case Home
+  case Mentions
+}
+
+enum TimelineDirection{
   case OlderTweets
   case NewerTweets
+  case AllTweets
 }
 
 class TwitterClient: BDBOAuth1RequestOperationManager {
@@ -94,29 +100,29 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
     getHomeTimeline(params: nil, success: success, failure: failure)
   }
   
-  func getHomeTimeline(#params:[String:AnyObject]?,success:([Tweet]? -> Void), failure:()->Void){
-    GET("1.1/statuses/home_timeline.json",
+  func getTimeline(timelineType: String, params:[String:AnyObject]?, success:([Tweet]? -> Void), failure:()->Void){
+    GET("1.1/statuses/\(timelineType)_timeline.json",
       parameters: params ?? nil,
       success:{
         (operation, response) -> Void in
         var tweets:[Tweet]?
-        if let tweetable = tweets{
-        for tweet in tweetable{
-          if let retweeted = tweet.retweeted {
-            if retweeted {
-              println("\(tweet)")
-            }
-          }
-        }
-        }
         tweets <<<<* response
         success(tweets)
       },
       failure: {
         (operation, error) -> Void in
-        println("home timleine error |||| \(error)")
+        println("\(timelineType) timleine error |||| \(error)")
         failure()
     })
+  }
+  
+  func getMentionsTimeline(#params:[String:AnyObject]?,success:([Tweet]? -> Void), failure:()->Void){
+    getTimeline("mentions", params: params, success: success, failure: failure)
+
+  }
+  
+  func getHomeTimeline(#params:[String:AnyObject]?,success:([Tweet]? -> Void), failure:()->Void){
+    getTimeline("home", params: params, success: success, failure: failure)
   }
   
   //status

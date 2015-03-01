@@ -31,7 +31,10 @@ class TweetCell: UITableViewCell, TweetCellDelegate {
   
   private var tweet:Tweet?
   var account:Account?
-  private var favoriteActionIsHappening = false
+  
+  private var allowRetweets:Bool {
+    return account?.screen_name != tweet?.account?.screen_name
+  }
   
   override func awakeFromNib() {
     super.awakeFromNib()
@@ -66,11 +69,13 @@ class TweetCell: UITableViewCell, TweetCellDelegate {
       favoriteButton.tintColor = favorited ? UIColor.yellowColor() : UIColor.grayColor()
     }
     
-     if let retweeted = tweet.retweeted{
+    if let retweeted = tweet.retweeted{
       retweetButton.tintColor = retweeted ? UIColor.greenColor() : UIColor.grayColor()
     }
-
     
+    if !allowRetweets {
+      retweetButton.alpha = 0.2
+    }
     
     if let date = tweet.createdAt{
       dateFormatter.doesRelativeDateFormatting = true
@@ -111,11 +116,13 @@ class TweetCell: UITableViewCell, TweetCellDelegate {
   
   
   @IBAction func retweetAction(sender: AnyObject) {
-    let retweeted = tweet?.retweeted ?? false
-    if retweeted{
-      delegate?.unretweet(tweet)
-    }else{
-      delegate?.retweet(tweet)
+    if allowRetweets {
+      let retweeted = tweet?.retweeted ?? false
+      if retweeted{
+        delegate?.unretweet(tweet)
+      }else{
+        delegate?.retweet(tweet)
+      }
     }
   }
   
