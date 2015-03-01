@@ -96,6 +96,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   private func setTheme(){
     UINavigationBar.appearance().barTintColor = UIColor(twitterHex: "75B4FC")
+    UINavigationBar.appearance().tintColor = UIColor.whiteColor()
     
     var attributes = [NSObject:AnyObject]()
     attributes[NSForegroundColorAttributeName] = UIColor(red: 225.0, green: 225.0, blue: 225.0, alpha: 1.0)
