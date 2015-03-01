@@ -22,7 +22,7 @@ protocol TimelineScrollDelegate{
 
 class TimelineViewController: TweetActionsController {
   
-  let InfiniteScrollThreshold = 10
+  let InfiniteScrollThreshold = 5
   
   var refreshControl:UIRefreshControl!
   var scrollDelegate:TimelineScrollDelegate?

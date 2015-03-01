@@ -61,7 +61,7 @@ class Account:Deserializable {
   required init(data: [String : AnyObject]) {
     description <<< data["profile_background_color"]
     profileImageUrl <<< data["profile_image_url"]
-    profileBackgroundUrl <<< data["profile_background_image_url"]
+    profileBackgroundUrl <<< data["profile_banner_url"]
     name <<< data["name"]
     location <<< data["location"]
     friends_count <<< data["friends_count"]

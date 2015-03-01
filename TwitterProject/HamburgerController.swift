@@ -25,6 +25,7 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
   private var mentionsController:UINavigationController!
   private var profileViewController: UINavigationController!
   private var selectedMenuItem:Int = 0
+  private var isShowingContainer = true
   
   var account:Account?
   
@@ -186,7 +187,7 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
       containerInView = containerView.center
     }
     if containerOutOfView == nil{
-      containerOutOfView = CGPoint(x: containerInView.x + containerView.frame.width - 40, y:containerInView.y)
+      containerOutOfView = CGPoint(x: containerInView.x + containerView.frame.width - 40, y: containerInView.y)
     }
     if menuInView == nil{
       menuInView = tableView.center
@@ -208,22 +209,22 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
     
     switch(sender.state){
     case .Began:
+      if isShowingContainer{
+        tableView.center = menuOutOfView
+      }
       containerOriginalCenter = containerView.center
       menuOriginalCenter = tableView.center
       break;
     case .Changed:
       var x = containerOriginalCenter.x + translation.x
+      //Translate menu by the same amount that the container is translated
       var y = menuOriginalCenter.y + translation.x
       containerView.center = CGPoint(x: x, y: containerOriginalCenter.y)
       tableView.center = CGPoint(x: menuOriginalCenter.x, y: y)
       break;
     case .Ended:
       if velocity.x > 0{
-        UIView.animateWithDuration(0.25, animations: { () -> Void in
-          self.containerView.center = self.containerOutOfView
-          self.tableView.center = self.menuInView
-          self.view.layoutIfNeeded()
-        })
+        hideContainer()
       }else if velocity.x < 0 {
         showContainer()
       }
@@ -233,16 +234,24 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
     }
   }
   
+  private func hideContainer(){
+    isShowingContainer = false
+    UIView.animateWithDuration(0.25, animations: { () -> Void in
+      self.containerView.center = self.containerOutOfView
+      self.tableView.center = self.menuInView
+      self.view.layoutIfNeeded()
+    })
+  }
+  
   private func showContainer(){
+    isShowingContainer = true
     UIView.animateWithDuration(0.25, animations: { () -> Void in
       self.containerView.center = self.containerInView
       self.tableView.center = self.menuOutOfView
       self.view.layoutIfNeeded()
+      self.tableView.center = self.menuOutOfView
       },
       completion: {(completed) -> Void in
-        // TODO: Determine why table cell selections don't return the
-        // tableview to the "out of view" position. This is a temp. hack
-        // to get it to work.
        self.tableView.center = self.menuOutOfView
     })
   }
