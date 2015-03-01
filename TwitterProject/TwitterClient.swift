@@ -11,6 +11,7 @@ import Foundation
 enum TimelineType{
   case Home
   case Mentions
+  case User
 }
 
 enum TimelineDirection{
@@ -101,6 +102,7 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
   }
   
   func getTimeline(timelineType: String, params:[String:AnyObject]?, success:([Tweet]? -> Void), failure:()->Void){
+    println("1.1/statuses/\(timelineType)_timeline.json")
     GET("1.1/statuses/\(timelineType)_timeline.json",
       parameters: params ?? nil,
       success:{
@@ -114,6 +116,11 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
         println("\(timelineType) timleine error |||| \(error)")
         failure()
     })
+  }
+  
+  //screen_name
+  func getUserTimeline(#params:[String:AnyObject]?,success:([Tweet]? -> Void), failure:()->Void){
+    getTimeline("user", params: params, success: success, failure: failure)
   }
   
   func getMentionsTimeline(#params:[String:AnyObject]?,success:([Tweet]? -> Void), failure:()->Void){

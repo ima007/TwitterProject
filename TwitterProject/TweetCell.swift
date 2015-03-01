@@ -27,6 +27,11 @@ class TweetCell: UITableViewCell, TweetCellDelegate {
   
   @IBOutlet weak private var favoriteButton: UIButton!
   
+  @IBOutlet weak var retweetCount: UILabel!
+  
+  @IBOutlet weak var favoriteCount: UILabel!
+  
+  
   var delegate:TweetActionsDelegate?
   
   private var tweet:Tweet?
@@ -41,6 +46,17 @@ class TweetCell: UITableViewCell, TweetCellDelegate {
     // Initialization code
     autoLayoutBug()
   }
+  
+  private func setProfileTapRecognizer(){
+    var recognizer = UITapGestureRecognizer(target: self, action: "openProfileView:")
+    recognizer.numberOfTapsRequired = 1
+    tweetImage.addGestureRecognizer(recognizer)
+  }
+  
+  func openProfileView(sender: UITapGestureRecognizer){
+    delegate?.openProfile(tweet)
+  }
+
   
   override func setSelected(selected: Bool, animated: Bool) {
     super.setSelected(selected, animated: animated)
@@ -75,6 +91,21 @@ class TweetCell: UITableViewCell, TweetCellDelegate {
     
     if !allowRetweets {
       retweetButton.alpha = 0.2
+    }
+    
+    retweetCount.text = tweet.retweet_count?.abbreviateNumber()
+    favoriteCount.text = tweet.favorite_count?.abbreviateNumber()
+    
+    if tweet.retweet_count > 0 {
+      retweetCount.alpha = 1
+    }else{
+      retweetCount.alpha = 0
+    }
+    
+    if tweet.favorite_count > 0 {
+      favoriteCount.alpha = 1
+    }else{
+      favoriteCount.alpha = 0
     }
     
     if let date = tweet.createdAt{

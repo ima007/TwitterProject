@@ -14,6 +14,7 @@ protocol TweetActionsDelegate{
   func unretweet(tweet:Tweet?)
   func favorite(tweet:Tweet?)
   func unfavorite(tweet:Tweet?)
+  func openProfile(tweet: Tweet?)
 }
 
 class TweetActionsCell: UITableViewCell, TweetCellDelegate {

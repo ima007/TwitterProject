@@ -13,8 +13,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
 
-
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    
+    setTheme()
     
     window = UIWindow(frame: UIScreen.mainScreen().bounds);
     
@@ -35,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     println("user did login")
     let storyboard = UIStoryboard(name: "Hamburger", bundle: nil)
     let controller = storyboard.instantiateViewControllerWithIdentifier("HamburgerController") as! HamburgerController
-    
+    controller.account = AccountManager.loggedInAccount
   
     window?.rootViewController = controller
     window?.makeKeyAndVisible()
@@ -91,6 +92,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     Account().api.getAccessToken(url.query!)
     
     return true
+  }
+  
+  private func setTheme(){
+    UINavigationBar.appearance().barTintColor = UIColor(twitterHex: "75B4FC")
+    
+    var attributes = [NSObject:AnyObject]()
+    attributes[NSForegroundColorAttributeName] = UIColor(red: 225.0, green: 225.0, blue: 225.0, alpha: 1.0)
+    attributes[NSFontAttributeName] = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
+    UINavigationBar.appearance().titleTextAttributes = attributes
+    
+    var attributes2 = [NSObject:AnyObject]()
+    attributes2[NSForegroundColorAttributeName] = UIColor(red: 225.0, green: 225.0, blue: 225.0, alpha: 1.0)
+    attributes2[NSFontAttributeName] = UIFont(name: "HelveticaNeue", size: 16.0)
+    UIBarButtonItem.appearance().setTitleTextAttributes(attributes2, forState: .Normal)
   }
 
 

@@ -9,7 +9,7 @@
 import UIKit
 
 enum PageType{
-  Profile
+  case Profile
 }
 
 class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate {
@@ -20,6 +20,13 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
   private let initialContainerStoryboard = UIStoryboard(name: "Timeline", bundle: nil)
   private var containerChildView: UIView!
   private var containerChildNavController: UINavigationController?
+  
+  private var homeController:UINavigationController!
+  private var mentionsController:UINavigationController!
+  private var profileViewController: UINavigationController!
+  private var selectedMenuItem:Int = 0
+  
+  var account:Account?
   
   
   private let sides:[NSLayoutAttribute] = [.Left,.Bottom,.Width,.Height]
@@ -51,39 +58,108 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
     var panRecognizer = UIPanGestureRecognizer(target: self, action: "openHamburgerMenu:")
     view.addGestureRecognizer(panRecognizer)
   }
-
   
   private func setInitialContainerView(){
     containerChildNavController = initialContainerStoryboard.instantiateInitialViewController() as? UINavigationController
     
-    if let initialContainerController = containerChildNavController{
-      containerChildView = initialContainerController.view
-      containerChildView.setTranslatesAutoresizingMaskIntoConstraints(false)
+    if let containerChildNavController = containerChildNavController{
+      addChildViewController(containerChildNavController)
+      
+      containerChildNavController.view.setTranslatesAutoresizingMaskIntoConstraints(false)
       
       //Add view and controller.
-      containerView.addSubview(containerChildView)
-      addChildViewController(initialContainerController)
+      containerView.insertSubview(containerChildNavController.view, atIndex: 0)
+      containerView.addConstraints(getContainerLayoutConstraintsFor(containerChildNavController.view))
     
-      containerView.addConstraints(getContainerLayoutConstraintsFor(containerChildView))
+      containerChildNavController.didMoveToParentViewController(self)
+      
+      homeController = containerChildNavController
+      
+
       
     }else{
       println("wow, catastrophic error...")
     }
   }
   
-  private func updateContainerViewTo(timelineType: TimelineType){
-    let timelineController = initialContainerStoryboard.instantiateViewControllerWithIdentifier("TimelineViewController") as! TimelineViewController
+  private func addActiveChildViewController(childController:UINavigationController?){
+    containerChildNavController = childController
+    if let containerChildNavController = containerChildNavController{
+      addChildViewController(containerChildNavController)
+      containerChildNavController.view.setTranslatesAutoresizingMaskIntoConstraints(false)
+      //Add view and controller.
+      containerView.insertSubview(containerChildNavController.view, atIndex: 0)
+      containerView.addConstraints(getContainerLayoutConstraintsFor(containerChildNavController.view))
+      containerChildNavController.didMoveToParentViewController(self)
+    }else{
+      println("no child")
+    }
+  }
+  
+  private func removeActiveChildViewController(){
+    containerChildNavController?.willMoveToParentViewController(self)
+    containerChildNavController?.view.removeFromSuperview()
+    containerChildNavController?.removeFromParentViewController()
+  }
+  
+  private func initTimelineViewController(timelineType: TimelineType) -> UINavigationController?{
+    let storyboard = UIStoryboard(name: "Timeline", bundle: nil)
+    let timelineController = storyboard.instantiateViewControllerWithIdentifier("TimelineViewController") as! TimelineViewController
+    
     timelineController.timelineType = timelineType
-    containerChildNavController?.pushViewController(timelineController, animated: true)
+    var navigationController = UINavigationController(rootViewController: timelineController)
+
+    return navigationController
+  }
+  
+  private func initProfileViewController() -> UINavigationController?{
+    let storyboard = UIStoryboard(name: "Timeline", bundle: nil)
+    let profileController = storyboard.instantiateViewControllerWithIdentifier("ProfileViewController") as! ProfileViewController
+    profileController.account = account
+    profileController.viewAccount = account
+    var navigationController = UINavigationController(rootViewController: profileController)
+    
+    return navigationController
+  }
+  
+  private func updateContainerViewTo(timelineType: TimelineType){
+    var timelineController: UINavigationController?
+    var newController = false
+    switch timelineType{
+    case .Home:
+      if(homeController == nil){
+        homeController = initTimelineViewController(timelineType)
+        //newController = true
+      }
+      timelineController = homeController
+    case .Mentions:
+      if(mentionsController == nil){
+        mentionsController = initTimelineViewController(timelineType)
+        //newController = true
+      }
+      timelineController = mentionsController
+    default:
+      println("updateContainerViewTo: error ||| timeline controller not found!")
+        break;
+    }
+    removeActiveChildViewController()
+    addActiveChildViewController(timelineController)
   }
   
   private func updateContainerViewTo(pageType: PageType){
+    var profileController: UINavigationController?
     switch pageType{
     case .Profile:
-      //let
+      if profileViewController == nil {
+        profileViewController = initProfileViewController()
+      }
+      profileController = profileViewController
     default:
       break;
     }
+    removeActiveChildViewController()
+    addActiveChildViewController(profileController)
+
   }
   
   /**
@@ -132,7 +208,8 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
       containerOriginalCenter = containerView.center
       break;
     case .Changed:
-      containerView.center = CGPoint(x: containerOriginalCenter.x + translation.x, y: containerOriginalCenter.y)
+      var x = containerOriginalCenter.x + translation.x
+      containerView.center = CGPoint(x: x, y: containerOriginalCenter.y)
       break;
     case .Ended:
       if velocity.x > 0{
@@ -140,14 +217,18 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
           self.containerView.center = self.containerOutOfView
         })
       }else if velocity.x < 0 {
-        UIView.animateWithDuration(0.25, animations: { () -> Void in
-          self.containerView.center = self.containerInView
-        })
+        showContainer()
       }
       break;
     default:
       break;
     }
+  }
+  
+  private func showContainer(){
+    UIView.animateWithDuration(0.25, animations: { () -> Void in
+      self.containerView.center = self.containerInView
+    })
   }
   
   override func didReceiveMemoryWarning() {
@@ -173,13 +254,24 @@ class HamburgerController: UIViewController, UITableViewDelegate, UITableViewDat
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     switch indexPath.row{
     case 0:
-      updateContainerViewTo(TimelineType.Home)
+      if selectedMenuItem != 0{
+        updateContainerViewTo(TimelineType.Home)
+        selectedMenuItem = 0
+      }
     case 1:
+      if selectedMenuItem != 1{
+        updateContainerViewTo(PageType.Profile)
+        selectedMenuItem = 1
+      }
     case 2:
-      updateContainerViewTo(TimelineType.Mentions)
+      if selectedMenuItem != 2{
+        updateContainerViewTo(TimelineType.Mentions)
+        selectedMenuItem = 2
+      }
     default:
       break;
     }
+    showContainer()
   }
   
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -21,22 +21,26 @@ class TimelineViewController: TweetActionsController {
   @IBOutlet weak var tableView: UITableView!
   
   var timelineType:TimelineType?
+  var screen_name:String?
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    
-    setTableView()
+    println("timeline view did appear")
+    setNavTitle()
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    println("timeline view did load")
+    
+    setTableView()
     
     delegate = self
     
     setToCurrentAccount()
-    setNavTitle()
     setRefreshControl()
     loadInitialData()
+    setNavTitle()
     
   }
   
@@ -55,22 +59,29 @@ class TimelineViewController: TweetActionsController {
   }
   
   func setNavTitle(){
-    let label = UILabel()
+    println("timeline view setNavTitle")
+    //var label = UILabel()
     //TODO: More robust handling for timeline types
-    label.text = timelineType == .Mentions ? "Mentions" : "Home"
-    label.textColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
-    label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
-    navigationController?.navigationItem.titleView = label
+    //label.text = timelineType == .Mentions ? "Mentions" : "Home"
+    //label.textColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
+    //label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
+    //navigationController?.navigationItem.titleView = label
+    navigationController?.navigationBar.topItem?.title = timelineType == .Mentions ? "Mentions" : "Home"
+  
 
   }
   
   func loadInitialData(){
     //Load new data
-    account?.getTimeline(timelineType, direction: TimelineDirection.AllTweets, success:{
+    if(timelineType == nil){
+      timelineType = TimelineType.Home
+    }
+    account?.getTimeline(timelineType, direction: TimelineDirection.AllTweets, screen_name: screen_name, success:{
       (tweets) -> Void in
       self.tableView.reloadData()
       },
       failure: {()-> Void in
+        println("failed to load initial data")
     })
   }
   
@@ -147,14 +158,8 @@ extension TimelineViewController:UITableViewDataSource, UITableViewDelegate{
       }
     }
   }
-  
-  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return account?.timeline?.count ?? 0
-  }
-  
-  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCellWithIdentifier("TweetCell") as! TweetCell
-    
+ 
+  private func getTimeline() -> [Tweet]?{
     var timeline = account?.timeline
     
     if let timelineType = timelineType{
@@ -167,6 +172,17 @@ extension TimelineViewController:UITableViewDataSource, UITableViewDelegate{
         break
       }
     }
+    return timeline
+  }
+  
+  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return getTimeline()?.count ?? 0
+  }
+  
+  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    let cell = tableView.dequeueReusableCellWithIdentifier("TweetCell") as! TweetCell
+    
+    var timeline = getTimeline()
     
     if let tweet = timeline?[indexPath.row]{
       cell.setContents(tweet)

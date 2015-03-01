@@ -36,6 +36,7 @@ class Account:Deserializable {
 
   var timeline:[Tweet]?
   var mentions:[Tweet]?
+  var userTimelines:[String:[Tweet]?]?
   
   lazy var api:TwitterClient = TwitterClient(account: self)
   
@@ -105,7 +106,11 @@ class Account:Deserializable {
     }
   }
   
-  func getTimeline(type: TimelineType?, direction: TimelineDirection?,success:([Tweet]? -> Void), failure:()->Void){
+  func getTimeline(type: TimelineType?, direction: TimelineDirection?, success:([Tweet]? -> Void), failure:()->Void){
+    getTimeline(type, direction: direction, screen_name:nil, success:success, failure:failure)
+  }
+  
+  func getTimeline(type: TimelineType?, direction: TimelineDirection?, screen_name:String?, success:([Tweet]? -> Void), failure:()->Void){
     if let type = type{
       switch type{
       case TimelineType.Home:
@@ -124,12 +129,27 @@ class Account:Deserializable {
             success(tweets)
           },
           failure: failure)
+      case TimelineType.User:
+        if let screen_name = screen_name{
+        var userTimeline = userTimelines?[screen_name] ?? [Tweet]()
+        api.getTimeline("user",
+          params: getTimelineTypeParams(tweets: userTimeline, direction: direction),
+          success: {(tweets) -> Void in
+            self.handleTimelineSuccess(direction, originalTimeline: &userTimeline, responseTweets:tweets)
+            if userTimeline?.count == 0{
+              self.userTimelines?[screen_name] = userTimeline
+            }
+            success(tweets)
+          },
+          failure: failure)
+        }
       default:
         break
       }
     }
-
   }
+  
+  
   
   /*
   * Replies require at least one username in the body

@@ -47,6 +47,12 @@ class TweetActionsController: UIViewController, TweetActionsDelegate, ComposeMod
   func unretweet(tweet: Tweet?){
     account?.unretweet(tweet, success: success, failure: {() -> Void in})
   }
+  func openProfile(tweet: Tweet?){
+    let vc = ProfileViewController(nibName: "ProfileViewController", bundle: nil)
+    vc.account = account
+    vc.viewAccount = tweet?.account
+    self.navigationController?.pushViewController(vc, animated: true)
+  }
   
   //Propagate that a tweet action was successful
   func success(tweet: Tweet?){
