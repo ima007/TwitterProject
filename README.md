@@ -3,6 +3,7 @@
 This is a basic twitter app to read and compose tweets the [Twitter API](https://apps.twitter.com/).
 
 Week 4 time spent: 10 hours
+
 Week 3 time spent: 13 hours
 
 ### Week 4 Features
