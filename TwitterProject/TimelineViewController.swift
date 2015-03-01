@@ -26,7 +26,6 @@ class TimelineViewController: TweetActionsController {
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     println("timeline view did appear")
-    setNavTitle()
   }
   
   override func viewDidLoad() {
@@ -59,16 +58,7 @@ class TimelineViewController: TweetActionsController {
   }
   
   func setNavTitle(){
-    println("timeline view setNavTitle")
-    //var label = UILabel()
-    //TODO: More robust handling for timeline types
-    //label.text = timelineType == .Mentions ? "Mentions" : "Home"
-    //label.textColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
-    //label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
-    //navigationController?.navigationItem.titleView = label
-    navigationController?.navigationBar.topItem?.title = timelineType == .Mentions ? "Mentions" : "Home"
-  
-
+    title = timelineType == .Mentions ? "Mentions" : "Home"
   }
   
   func loadInitialData(){
@@ -76,6 +66,7 @@ class TimelineViewController: TweetActionsController {
     if(timelineType == nil){
       timelineType = TimelineType.Home
     }
+
     account?.getTimeline(timelineType, direction: TimelineDirection.AllTweets, screen_name: screen_name, success:{
       (tweets) -> Void in
       self.tableView.reloadData()
@@ -132,7 +123,7 @@ class TimelineViewController: TweetActionsController {
     if segue.identifier == "seeDetailSegue"{
       if let destinationVC = segue.destinationViewController as? TweetViewController{
         if let tweetIndex = tableView.indexPathForSelectedRow()?.row {
-          destinationVC.tweet = account?.timeline?[tweetIndex]
+          destinationVC.tweet = getTimeline()?[tweetIndex]
           destinationVC.account = account
           destinationVC.delegate = self
         }
@@ -150,7 +141,7 @@ extension TimelineViewController:UITableViewDataSource, UITableViewDelegate{
   
   //Infinite scroll functionality, see older tweets
   func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath){
-    if let count = account?.timeline?.count{
+    if let count = getTimeline()?.count{
       if indexPath.row == count - InfiniteScrollThreshold {
         account?.getTimeline(timelineType, direction: TimelineDirection.OlderTweets, success: {(tweets)->Void in
           self.tableView.reloadData()
@@ -168,6 +159,13 @@ extension TimelineViewController:UITableViewDataSource, UITableViewDelegate{
         timeline = account?.timeline
       case .Mentions:
         timeline = account?.mentions
+      case .User:
+        if let userTimeline = account?.userTimelines[screen_name!]{
+          timeline = userTimeline
+          println("shane timeline")
+        }else{
+          println("sorry dude \(screen_name)")
+        }
       default:
         break
       }

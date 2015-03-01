@@ -37,10 +37,11 @@ class ProfileViewController: TweetActionsController {
   }
   
   private func setTitleText(){
+    println("\(viewAccount)")
     if viewAccount?.screen_name == account?.screen_name{
-      navigationController?.navigationBar.topItem?.title = "Me"
+      title = "Me"
     }else{
-      navigationController?.navigationBar.topItem?.title = viewAccount?.screen_name
+      title = viewAccount?.screen_name
     }
   }
   

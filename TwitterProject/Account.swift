@@ -36,7 +36,7 @@ class Account:Deserializable {
 
   var timeline:[Tweet]?
   var mentions:[Tweet]?
-  var userTimelines:[String:[Tweet]?]?
+  var userTimelines = [String:[Tweet]?]()
   
   lazy var api:TwitterClient = TwitterClient(account: self)
   
@@ -87,6 +87,8 @@ class Account:Deserializable {
       if let load_type = load_type, let tweet_id = tweet_id {
         params = [String:String]()
         params?.updateValue(tweet_id, forKey: load_type)
+      }else{
+        params = [String:String]()
       }
     }
     return params
@@ -131,17 +133,19 @@ class Account:Deserializable {
           failure: failure)
       case TimelineType.User:
         if let screen_name = screen_name{
-        var userTimeline = userTimelines?[screen_name] ?? [Tweet]()
-        api.getTimeline("user",
-          params: getTimelineTypeParams(tweets: userTimeline, direction: direction),
-          success: {(tweets) -> Void in
-            self.handleTimelineSuccess(direction, originalTimeline: &userTimeline, responseTweets:tweets)
-            if userTimeline?.count == 0{
-              self.userTimelines?[screen_name] = userTimeline
-            }
-            success(tweets)
-          },
-          failure: failure)
+          if userTimelines[screen_name] == nil{
+            userTimelines[screen_name] = [Tweet]()
+          }
+  
+          var params = getTimelineTypeParams(tweets: userTimelines[screen_name]!, direction: direction)
+          params?.updateValue(screen_name, forKey: "screen_name")
+          api.getTimeline("user",
+            params: params!,
+            success: {(tweets) -> Void in
+              self.handleTimelineSuccess(direction, originalTimeline: &self.userTimelines[screen_name]!, responseTweets:tweets)
+              success(tweets)
+            },
+            failure: failure)
         }
       default:
         break
@@ -268,7 +272,7 @@ class Account:Deserializable {
     api.getRequestToken()
   }
   
-   deinit { println("\(name) is being deinitialized") }
+   deinit { /*println("\(name) is being deinitialized")*/ }
 }
 
 /*

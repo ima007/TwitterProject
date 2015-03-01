@@ -48,10 +48,13 @@ class TweetActionsController: UIViewController, TweetActionsDelegate, ComposeMod
     account?.unretweet(tweet, success: success, failure: {() -> Void in})
   }
   func openProfile(tweet: Tweet?){
-    let vc = ProfileViewController(nibName: "ProfileViewController", bundle: nil)
-    vc.account = account
-    vc.viewAccount = tweet?.account
-    self.navigationController?.pushViewController(vc, animated: true)
+    let storyboard = UIStoryboard(name: "Timeline", bundle: nil)
+    let profileController = storyboard.instantiateViewControllerWithIdentifier("ProfileViewController") as! ProfileViewController
+    
+    profileController.account = account
+    profileController.viewAccount = tweet?.account
+    
+    self.navigationController?.pushViewController(profileController, animated: true)
   }
   
   //Propagate that a tweet action was successful

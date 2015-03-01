@@ -134,7 +134,9 @@ class Tweet:Deserializable{
     delegate?.update(self)
   }
   
-  deinit { println("Tweet is being deinitialized") }
+  deinit {
+    /* println("Tweet is being deinitialized") */
+  }
   
 }
 

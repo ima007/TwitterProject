@@ -45,15 +45,18 @@ class TweetCell: UITableViewCell, TweetCellDelegate {
     super.awakeFromNib()
     // Initialization code
     autoLayoutBug()
+    setProfileTapRecognizer()
   }
   
   private func setProfileTapRecognizer(){
+    tweetImage.userInteractionEnabled = true
     var recognizer = UITapGestureRecognizer(target: self, action: "openProfileView:")
     recognizer.numberOfTapsRequired = 1
     tweetImage.addGestureRecognizer(recognizer)
   }
   
   func openProfileView(sender: UITapGestureRecognizer){
+    println("openProfile openProfileView")
     delegate?.openProfile(tweet)
   }
 
@@ -89,10 +92,6 @@ class TweetCell: UITableViewCell, TweetCellDelegate {
       retweetButton.tintColor = retweeted ? UIColor.greenColor() : UIColor.grayColor()
     }
     
-    if !allowRetweets {
-      retweetButton.alpha = 0.2
-    }
-    
     retweetCount.text = tweet.retweet_count?.abbreviateNumber()
     favoriteCount.text = tweet.favorite_count?.abbreviateNumber()
     
@@ -106,6 +105,10 @@ class TweetCell: UITableViewCell, TweetCellDelegate {
       favoriteCount.alpha = 1
     }else{
       favoriteCount.alpha = 0
+    }
+    
+    if !allowRetweets {
+      retweetButton.alpha = 0
     }
     
     if let date = tweet.createdAt{
